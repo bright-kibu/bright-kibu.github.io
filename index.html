@@ -7,44 +7,63 @@
   <style>
     body {
       margin: 0;
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       background: #51046b; /* background purple */
+      padding: 20px;
+      box-sizing: border-box;
     }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      width: 100%;
+      max-width: 100vw;
+    }
+
     .main-image {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
       width: auto;
-      height: 80vh;
+      height: 60vh;
       max-width: 90vw;
-      object-fit: contain;
+      object-fit: cover;
       border-radius: 50px;
       border: 8px solid white;
       box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 
                   0 10px 20px rgba(0, 0, 0, 0.4),
                   0 0 0 1px rgba(255, 255, 255, 0.1);
-      z-index: 20;
+      margin-bottom: 40px;
+    }
+
+    .spacer {
+      width: 60px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 1px;
+      margin-bottom: 30px;
     }
 
     .copyright {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
       color: rgba(255, 255, 255, 0.7);
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       font-size: 14px;
       font-weight: 300;
-      z-index: 25;
+      text-align: center;
+      padding: 15px;
+      margin-bottom: 20px;
     }
   </style>
 </head>
 <body>
-  <img src="img/496453870-6642a2b8-ea28-46a3-a19a-ceced09dedb9.png" alt="Main Image" class="main-image">
-  <div class="copyright">© 2025 Bright Kibu Corporation</div>
+  <div class="container">
+    <img src="img/496453870-6642a2b8-ea28-46a3-a19a-ceced09dedb9.png" alt="Main Image" class="main-image">
+    <div class="spacer"></div>
+    <div class="copyright">© 2025 Bright Kibu Corporation</div>
+  </div>
 </body>
 </html>
