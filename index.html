@@ -3,67 +3,647 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bright Kibu</title>
+  <title>Bright Kibu - Robot Cognitive Processing</title>
   <style>
-    body {
+    * {
       margin: 0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      background: #51046b; /* background purple */
-      padding: 20px;
+      padding: 0;
       box-sizing: border-box;
     }
 
-    .container {
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #000;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      overflow: hidden;
+    }
+
+    .main-container {
       flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 40px;
+      overflow-x: auto;
+    }
+
+    .sentence-container {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: nowrap;
+      justify-content: center;
       width: 100%;
-      max-width: 100vw;
+      max-width: 100%;
     }
 
-    .main-image {
-      width: auto;
-      height: 60vh;
-      max-width: 90vw;
-      object-fit: cover;
-      border-radius: 50px;
-      border: 8px solid white;
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 
-                  0 10px 20px rgba(0, 0, 0, 0.4),
-                  0 0 0 1px rgba(255, 255, 255, 0.1);
-      margin-bottom: 40px;
+    .sentence-text {
+      font-size: 16px;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.6);
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
-    .spacer {
-      width: 60px;
-      height: 2px;
-      background: rgba(255, 255, 255, 0.3);
-      border-radius: 1px;
-      margin-bottom: 30px;
+    .slot-column {
+      width: 180px;
+      height: 200px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 4px;
+      flex-shrink: 0;
     }
 
-    .copyright {
-      color: rgba(255, 255, 255, 0.7);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      font-size: 14px;
-      font-weight: 300;
-      text-align: center;
-      padding: 15px;
-      margin-bottom: 20px;
+    .slot-column.perception {
+      background: rgba(255, 165, 0, 0.05);
+    }
+
+    .slot-column.interpretation,
+    .slot-column.decision,
+    .slot-column.action {
+      background: rgba(0, 122, 255, 0.05);
+    }
+
+    .slot-column.highlighted {
+      background: rgba(255, 165, 0, 0.15);
+    }
+
+    .slot-column.interpretation.highlighted,
+    .slot-column.decision.highlighted,
+    .slot-column.action.highlighted {
+      background: rgba(0, 122, 255, 0.15);
+    }
+
+    .slot-scroll {
+      height: 100%;
+      overflow-y: scroll;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .slot-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .slot-items {
+      display: flex;
+      flex-direction: column;
+      padding-top: 80px;
+      padding-bottom: 80px;
+      width: 100%;
+    }
+
+    .slot-item {
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      font-size: 16px;
+      transition: opacity 0.2s, transform 0.2s;
+      white-space: normal;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      line-height: 1.3;
+      text-align: left;
+    }
+
+    .slot-item.distance-0 {
+      opacity: 1.0;
+      transform: scale(1.0);
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .slot-item.distance-1 {
+      opacity: 0.65;
+      transform: scale(0.98);
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .slot-item.distance-2 {
+      opacity: 0.35;
+      transform: scale(0.96);
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .slot-item.distance-3 {
+      opacity: 0.15;
+      transform: scale(0.94);
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .vitals-row {
+      display: flex;
+      gap: 20px;
+      padding: 12px 40px;
+      background: rgba(255, 255, 255, 0.05);
+      width: 100%;
+      justify-content: flex-start;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .vital-item {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .vital-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .vital-value {
+      font-size: 11px;
+      font-weight: 400;
+      color: #fff;
+    }
+
+    @media (max-width: 1200px) {
+      .main-container {
+        padding: 40px 20px;
+        overflow-x: auto;
+      }
+
+      .sentence-container {
+        min-width: 1000px;
+        justify-content: flex-start;
+      }
+
+      .sentence-text {
+        font-size: 14px;
+      }
+
+      .slot-column {
+        width: 160px;
+        height: 180px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <img src="img/496453870-6642a2b8-ea28-46a3-a19a-ceced09dedb9.png" alt="Main Image" class="main-image">
-    <div class="spacer"></div>
-    <div class="copyright">© 2025 Bright Kibu Corporation</div>
+  <div class="main-container">
+    <div class="sentence-container">
+      <!-- <span class="sentence-text">Robot has sensed</span> -->
+      
+      <div class="slot-column perception" id="perception-column">
+        <div class="slot-scroll" id="perception-scroll">
+          <div class="slot-items" id="perception-items"></div>
+        </div>
+      </div>
+
+      <span class="sentence-text">and interpreted it as</span>
+
+      <div class="slot-column interpretation" id="interpretation-column">
+        <div class="slot-scroll" id="interpretation-scroll">
+          <div class="slot-items" id="interpretation-items"></div>
+        </div>
+      </div>
+
+      <span class="sentence-text">and decided to</span>
+
+      <div class="slot-column decision" id="decision-column">
+        <div class="slot-scroll" id="decision-scroll">
+          <div class="slot-items" id="decision-items"></div>
+        </div>
+      </div>
+
+      <span class="sentence-text">by performing</span>
+
+      <div class="slot-column action" id="action-column">
+        <div class="slot-scroll" id="action-scroll">
+          <div class="slot-items" id="action-items"></div>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <div class="vitals-row">
+    <div class="vital-item">
+      <span class="vital-label">state:</span>
+      <span class="vital-value" id="state-value">acting</span>
+    </div>
+    <div class="vital-item">
+      <span class="vital-label">temp:</span>
+      <span class="vital-value" id="temp-value">23.8°C</span>
+    </div>
+    <div class="vital-item">
+      <span class="vital-label">humidity:</span>
+      <span class="vital-value" id="humidity-value">48% RH</span>
+    </div>
+    <div class="vital-item">
+      <span class="vital-label">load:</span>
+      <span class="vital-value" id="load-value">12%</span>
+    </div>
+  </div>
+
+  <script>
+    // Data arrays matching the SwiftUI version
+    const perceptionOptions = [
+      "person detected",
+      "proximity changed",
+      "gaze detected",
+      "pointing gesture",
+      "hand gesture",
+      "audio detected",
+      "voice command",
+      "keyword detected",
+      "time-of-day changed",
+      "morning transition",
+      "evening transition",
+      "temperature changed",
+      "humidity changed",
+      "light level changed",
+      "air quality changed",
+      "water detected",
+      "energy event",
+      "notification received",
+      "user input",
+      "control state changed"
+    ];
+
+    const interpretationOptions = [
+      "a noise",
+      "a conversation",
+      "running water",
+      "keyword detected",
+      "voice command",
+      "someone entered",
+      "someone approaching",
+      "someone leaving",
+      "person in intimate zone",
+      "person in personal zone",
+      "morning transition",
+      "afternoon transition",
+      "evening transition",
+      "night transition",
+      "time of day changed",
+      "timer expired",
+      "temperature rising",
+      "temperature dropping",
+      "humidity changed",
+      "light level changed",
+      "air quality changed",
+      "gaze detected",
+      "pointing gesture",
+      "hand gesture",
+      "routine notification",
+      "important notification",
+      "urgent notification",
+      "HomeKit event",
+      "control command",
+      "light control command",
+      "arm movement command",
+      "unknown"
+    ];
+
+    const decisionOptions = [
+      "execute greeting",
+      "acknowledge presence",
+      "show curiosity",
+      "orient toward source",
+      "track person",
+      "adjust lighting",
+      "play audio cue",
+      "update display",
+      "return to idle",
+      "suppress response",
+      "do nothing",
+      "wait for more context"
+    ];
+
+    const actionOptions = [
+      "execute animation",
+      "greeting wave",
+      "curiosity lean",
+      "acknowledgment nod",
+      "awareness lift",
+      "orient and hold",
+      "return to home",
+      "update LED pattern",
+      "adjust brightness",
+      "play audio tone",
+      "center person in frame",
+      "update display chip",
+      "control home device",
+      "stop movement"
+    ];
+
+    // Complete sentence combinations - semantically coherent cognitive processing scenarios
+    const cognitiveSentences = [
+      // Person detection scenarios
+      {
+        perception: perceptionOptions.indexOf("person detected"),
+        interpretation: interpretationOptions.indexOf("someone entered"),
+        decision: decisionOptions.indexOf("execute greeting"),
+        action: actionOptions.indexOf("greeting wave")
+      },
+      {
+        perception: perceptionOptions.indexOf("proximity changed"),
+        interpretation: interpretationOptions.indexOf("someone approaching"),
+        decision: decisionOptions.indexOf("show curiosity"),
+        action: actionOptions.indexOf("curiosity lean")
+      },
+      {
+        perception: perceptionOptions.indexOf("person detected"),
+        interpretation: interpretationOptions.indexOf("person in intimate zone"),
+        decision: decisionOptions.indexOf("acknowledge presence"),
+        action: actionOptions.indexOf("acknowledgment nod")
+      },
+      {
+        perception: perceptionOptions.indexOf("proximity changed"),
+        interpretation: interpretationOptions.indexOf("someone leaving"),
+        decision: decisionOptions.indexOf("return to idle"),
+        action: actionOptions.indexOf("return to home")
+      },
+      // Audio scenarios
+      {
+        perception: perceptionOptions.indexOf("audio detected"),
+        interpretation: interpretationOptions.indexOf("a noise"),
+        decision: decisionOptions.indexOf("orient toward source"),
+        action: actionOptions.indexOf("orient and hold")
+      },
+      {
+        perception: perceptionOptions.indexOf("voice command"),
+        interpretation: interpretationOptions.indexOf("voice command"),
+        decision: decisionOptions.indexOf("wait for more context"),
+        action: actionOptions.indexOf("update display chip")
+      },
+      {
+        perception: perceptionOptions.indexOf("keyword detected"),
+        interpretation: interpretationOptions.indexOf("keyword detected"),
+        decision: decisionOptions.indexOf("start listening"),
+        action: actionOptions.indexOf("play audio tone")
+      },
+      {
+        perception: perceptionOptions.indexOf("audio detected"),
+        interpretation: interpretationOptions.indexOf("a conversation"),
+        decision: decisionOptions.indexOf("do nothing"),
+        action: actionOptions.indexOf("update display chip")
+      },
+      // Gesture scenarios
+      {
+        perception: perceptionOptions.indexOf("gaze detected"),
+        interpretation: interpretationOptions.indexOf("gaze detected"),
+        decision: decisionOptions.indexOf("acknowledge presence"),
+        action: actionOptions.indexOf("awareness lift")
+      },
+      {
+        perception: perceptionOptions.indexOf("pointing gesture"),
+        interpretation: interpretationOptions.indexOf("pointing gesture"),
+        decision: decisionOptions.indexOf("orient toward source"),
+        action: actionOptions.indexOf("orient and hold")
+      },
+      {
+        perception: perceptionOptions.indexOf("hand gesture"),
+        interpretation: interpretationOptions.indexOf("hand gesture"),
+        decision: decisionOptions.indexOf("execute greeting"),
+        action: actionOptions.indexOf("acknowledgment nod")
+      },
+      // Temporal scenarios
+      {
+        perception: perceptionOptions.indexOf("morning transition"),
+        interpretation: interpretationOptions.indexOf("morning transition"),
+        decision: decisionOptions.indexOf("adjust lighting"),
+        action: actionOptions.indexOf("update LED pattern")
+      },
+      {
+        perception: perceptionOptions.indexOf("evening transition"),
+        interpretation: interpretationOptions.indexOf("evening transition"),
+        decision: decisionOptions.indexOf("adjust lighting"),
+        action: actionOptions.indexOf("adjust brightness")
+      },
+      {
+        perception: perceptionOptions.indexOf("time-of-day changed"),
+        interpretation: interpretationOptions.indexOf("time of day changed"),
+        decision: decisionOptions.indexOf("return to idle"),
+        action: actionOptions.indexOf("return to home")
+      },
+      // Environmental scenarios
+      {
+        perception: perceptionOptions.indexOf("temperature changed"),
+        interpretation: interpretationOptions.indexOf("temperature rising"),
+        decision: decisionOptions.indexOf("adjust lighting"),
+        action: actionOptions.indexOf("update LED pattern")
+      },
+      {
+        perception: perceptionOptions.indexOf("light level changed"),
+        interpretation: interpretationOptions.indexOf("light level changed"),
+        decision: decisionOptions.indexOf("adjust lighting"),
+        action: actionOptions.indexOf("adjust brightness")
+      },
+      {
+        perception: perceptionOptions.indexOf("air quality changed"),
+        interpretation: interpretationOptions.indexOf("air quality changed"),
+        decision: decisionOptions.indexOf("update display"),
+        action: actionOptions.indexOf("update display chip")
+      },
+      // Notification scenarios
+      {
+        perception: perceptionOptions.indexOf("notification received"),
+        interpretation: interpretationOptions.indexOf("routine notification"),
+        decision: decisionOptions.indexOf("notify user"),
+        action: actionOptions.indexOf("play audio tone")
+      },
+      {
+        perception: perceptionOptions.indexOf("notification received"),
+        interpretation: interpretationOptions.indexOf("important notification"),
+        decision: decisionOptions.indexOf("notify user"),
+        action: actionOptions.indexOf("acknowledgment nod")
+      },
+      {
+        perception: perceptionOptions.indexOf("notification received"),
+        interpretation: interpretationOptions.indexOf("urgent notification"),
+        decision: decisionOptions.indexOf("notify user"),
+        action: actionOptions.indexOf("execute animation")
+      },
+      // User input scenarios
+      {
+        perception: perceptionOptions.indexOf("user input"),
+        interpretation: interpretationOptions.indexOf("control command"),
+        decision: decisionOptions.indexOf("update display"),
+        action: actionOptions.indexOf("update display chip")
+      },
+      {
+        perception: perceptionOptions.indexOf("user input"),
+        interpretation: interpretationOptions.indexOf("light control command"),
+        decision: decisionOptions.indexOf("adjust lighting"),
+        action: actionOptions.indexOf("control home device")
+      },
+      {
+        perception: perceptionOptions.indexOf("control state changed"),
+        interpretation: interpretationOptions.indexOf("HomeKit event"),
+        decision: decisionOptions.indexOf("update display"),
+        action: actionOptions.indexOf("update display chip")
+      },
+      // Water/energy scenarios
+      {
+        perception: perceptionOptions.indexOf("water detected"),
+        interpretation: interpretationOptions.indexOf("running water"),
+        decision: decisionOptions.indexOf("do nothing"),
+        action: actionOptions.indexOf("update display chip")
+      },
+      {
+        perception: perceptionOptions.indexOf("energy event"),
+        interpretation: interpretationOptions.indexOf("unknown"),
+        decision: decisionOptions.indexOf("wait for more context"),
+        action: actionOptions.indexOf("update display chip")
+      },
+      // Person tracking scenarios
+      {
+        perception: perceptionOptions.indexOf("person detected"),
+        interpretation: interpretationOptions.indexOf("person in personal zone"),
+        decision: decisionOptions.indexOf("track person"),
+        action: actionOptions.indexOf("center person in frame")
+      },
+      {
+        perception: perceptionOptions.indexOf("gaze detected"),
+        interpretation: interpretationOptions.indexOf("gaze detected"),
+        decision: decisionOptions.indexOf("track person"),
+        action: actionOptions.indexOf("orient and hold")
+      }
+    ];
+
+    // State
+    let currentSentenceIndex = 0;
+    let perceptionIndex = perceptionOptions.length - 1;
+    let interpretationIndex = interpretationOptions.length - 1;
+    let decisionIndex = decisionOptions.length - 1;
+    let actionIndex = actionOptions.length - 1;
+
+    // Initialize columns
+    function initializeColumn(containerId, itemsId, options) {
+      const container = document.getElementById(containerId);
+      const itemsContainer = document.getElementById(itemsId);
+      
+      options.forEach((item, index) => {
+        const itemEl = document.createElement('div');
+        itemEl.className = 'slot-item';
+        itemEl.textContent = item;
+        itemEl.id = `${containerId}-item-${index}`;
+        itemsContainer.appendChild(itemEl);
+      });
+      
+      updateColumnOpacity(containerId, options.length, 0);
+    }
+
+    // Update column opacity based on selected index
+    function updateColumnOpacity(columnId, totalItems, selectedIndex) {
+      for (let i = 0; i < totalItems; i++) {
+        const item = document.getElementById(`${columnId}-item-${i}`);
+        if (item) {
+          const distance = Math.abs(i - selectedIndex);
+          item.className = `slot-item distance-${Math.min(distance, 3)}`;
+        }
+      }
+    }
+
+    // Scroll to index
+    function scrollToIndex(columnId, scrollId, itemsId, options, index) {
+      const scrollContainer = document.getElementById(scrollId);
+      const itemsContainer = document.getElementById(itemsId);
+      const item = document.getElementById(`${columnId}-item-${index}`);
+      
+      if (item && scrollContainer) {
+        const itemTop = item.offsetTop;
+        const containerHeight = scrollContainer.clientHeight;
+        const scrollPosition = itemTop - (containerHeight / 2) + 20; // 20px = half of item height
+        
+        scrollContainer.scrollTo({
+          top: scrollPosition,
+          behavior: 'smooth'
+        });
+        
+        updateColumnOpacity(columnId, options.length, index);
+      }
+    }
+
+    // Highlight column
+    function highlightColumn(columnId, highlight) {
+      const column = document.getElementById(columnId);
+      if (column) {
+        if (highlight) {
+          column.classList.add('highlighted');
+        } else {
+          column.classList.remove('highlighted');
+        }
+      }
+    }
+
+    // Process a complete cognitive sentence
+    function processCognitiveSentence(sentence) {
+      // Step 1: Perception (500ms delay)
+      setTimeout(() => {
+        perceptionIndex = sentence.perception;
+        scrollToIndex('perception-column', 'perception-scroll', 'perception-items', perceptionOptions, perceptionIndex);
+        highlightColumn('perception-column', true);
+        setTimeout(() => highlightColumn('perception-column', false), 250);
+      }, 500);
+
+      // Step 2: Interpretation (650ms delay - 150ms after perception)
+      setTimeout(() => {
+        interpretationIndex = sentence.interpretation;
+        scrollToIndex('interpretation-column', 'interpretation-scroll', 'interpretation-items', interpretationOptions, interpretationIndex);
+        highlightColumn('interpretation-column', true);
+        setTimeout(() => highlightColumn('interpretation-column', false), 250);
+      }, 650);
+
+      // Step 3: Decision (800ms delay - 150ms after interpretation)
+      setTimeout(() => {
+        decisionIndex = sentence.decision;
+        scrollToIndex('decision-column', 'decision-scroll', 'decision-items', decisionOptions, decisionIndex);
+        highlightColumn('decision-column', true);
+        setTimeout(() => highlightColumn('decision-column', false), 250);
+      }, 800);
+
+      // Step 4: Action (950ms delay - 150ms after decision)
+      setTimeout(() => {
+        actionIndex = sentence.action;
+        scrollToIndex('action-column', 'action-scroll', 'action-items', actionOptions, actionIndex);
+        highlightColumn('action-column', true);
+        setTimeout(() => highlightColumn('action-column', false), 250);
+      }, 950);
+    }
+
+    // Cycle through cognitive sentences
+    function cycleCognitiveSentences() {
+      // Get current sentence
+      const sentence = cognitiveSentences[currentSentenceIndex];
+      
+      // Process the complete sentence
+      processCognitiveSentence(sentence);
+      
+      // Move to next sentence
+      currentSentenceIndex = (currentSentenceIndex + 1) % cognitiveSentences.length;
+      
+      // Schedule next cycle (5 seconds total: 0.5s + 0.15s + 0.15s + 0.15s + 4s pause)
+      setTimeout(cycleCognitiveSentences, 5000);
+    }
+
+    // Initialize all columns
+    initializeColumn('perception-column', 'perception-items', perceptionOptions);
+    initializeColumn('interpretation-column', 'interpretation-items', interpretationOptions);
+    initializeColumn('decision-column', 'decision-items', decisionOptions);
+    initializeColumn('action-column', 'action-items', actionOptions);
+
+    // Initial scroll to center items
+    setTimeout(() => {
+      scrollToIndex('perception-column', 'perception-scroll', 'perception-items', perceptionOptions, perceptionIndex);
+      scrollToIndex('interpretation-column', 'interpretation-scroll', 'interpretation-items', interpretationOptions, interpretationIndex);
+      scrollToIndex('decision-column', 'decision-scroll', 'decision-items', decisionOptions, decisionIndex);
+      scrollToIndex('action-column', 'action-scroll', 'action-items', actionOptions, actionIndex);
+      
+      // Start cognitive processing cycle after initial positioning
+      setTimeout(cycleCognitiveSentences, 1000);
+    }, 200);
+  </script>
 </body>
 </html>
