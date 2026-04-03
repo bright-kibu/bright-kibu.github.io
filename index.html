@@ -1,669 +1,1077 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bright Kibu - Robot Cognitive Processing</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KIBU — Agentic AI at the Edge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Allura&family=Barlow:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Barlow+Condensed:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0A0F1E;
+    --bg2: #0D1528;
+    --bg3: #111E35;
+    --border: #1A2E50;
+    --cyan: #00C2FF;
+    --green: #00E5A0;
+    --red: #FF4D6D;
+    --amber: #FF8C42;
+    --slate: #8BAFD4;
+    --dim: #4A6A8A;
+    --white: #FFFFFF;
+    /* Nav “Bright” script: high-luminance neon, readable on --bg */
+    --bright-neon: #DFF06A;
+  }
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: #000;
-      color: #fff;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    .main-container {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 60px 40px;
-      overflow-x: auto;
-    }
+  html { scroll-behavior: smooth; }
 
-    .sentence-container {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      flex-wrap: nowrap;
-      justify-content: center;
-      width: 100%;
-      max-width: 100%;
-    }
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
 
-    .sentence-text {
-      font-size: 16px;
-      font-weight: 400;
-      color: rgba(255, 255, 255, 0.6);
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 3rem;
+    height: 60px;
+    background: rgba(10,15,30,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
 
-    .slot-column {
-      width: 180px;
-      height: 200px;
-      position: relative;
-      overflow: hidden;
-      border-radius: 4px;
-      flex-shrink: 0;
-    }
+  .nav-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    text-decoration: none;
+    color: var(--white);
+  }
 
-    .slot-column.perception {
-      background: rgba(255, 165, 0, 0.05);
-    }
+  .nav-logo-bright {
+    font-family: 'Allura', cursive;
+    font-weight: 400;
+    font-size: 1.85rem;
+    line-height: 1;
+    color: var(--bright-neon);
+    letter-spacing: 0.02em;
+    transform: translateY(0.06em);
+    text-shadow: 0 0 1px rgba(10, 15, 30, 0.9);
+  }
 
-    .slot-column.interpretation,
-    .slot-column.decision,
-    .slot-column.action {
-      background: rgba(0, 122, 255, 0.05);
-    }
+  .nav-logo-kibu {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    letter-spacing: 0.15em;
+  }
 
-    .slot-column.highlighted {
-      background: rgba(255, 165, 0, 0.15);
-    }
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
 
-    .slot-column.interpretation.highlighted,
-    .slot-column.decision.highlighted,
-    .slot-column.action.highlighted {
-      background: rgba(0, 122, 255, 0.15);
-    }
+  .nav-links a {
+    color: var(--slate);
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
 
-    .slot-scroll {
-      height: 100%;
-      overflow-y: scroll;
-      scroll-behavior: smooth;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-    }
+  .nav-links a:hover { color: var(--cyan); }
 
-    .slot-scroll::-webkit-scrollbar {
-      display: none;
-    }
+  /* ── LEFT ACCENT BAR ── */
+  .section-bar {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+  }
 
-    .slot-items {
-      display: flex;
-      flex-direction: column;
-      padding-top: 80px;
-      padding-bottom: 80px;
-      width: 100%;
-    }
+  /* ── SECTIONS ── */
+  section {
+    position: relative;
+    padding: 7rem 4rem 5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
 
-    .slot-item {
-      min-height: 40px;
-      display: flex;
-      align-items: center;
-      padding: 0 12px;
-      font-size: 16px;
-      transition: opacity 0.2s, transform 0.2s;
-      white-space: normal;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-      line-height: 1.3;
-      text-align: left;
-    }
+  section + section {
+    border-top: 1px solid var(--border);
+  }
 
-    .slot-item.distance-0 {
-      opacity: 1.0;
-      transform: scale(1.0);
-      font-weight: 600;
-      color: #fff;
-    }
+  .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
 
-    .slot-item.distance-1 {
-      opacity: 0.65;
-      transform: scale(0.98);
-      color: rgba(255, 255, 255, 0.8);
-    }
+  .section-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.1;
+    color: var(--white);
+    margin-bottom: 1rem;
+  }
 
-    .slot-item.distance-2 {
-      opacity: 0.35;
-      transform: scale(0.96);
-      color: rgba(255, 255, 255, 0.6);
-    }
+  .section-sub {
+    color: var(--slate);
+    font-style: italic;
+    font-size: 1rem;
+    max-width: 820px;
+    margin-bottom: 3rem;
+  }
 
-    .slot-item.distance-3 {
-      opacity: 0.15;
-      transform: scale(0.94);
-      color: rgba(255, 255, 255, 0.4);
-    }
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding-top: 0;
+    max-width: none;
+    padding: 0 4rem;
+    position: relative;
+    overflow: hidden;
+  }
 
-    .vitals-row {
-      display: flex;
-      gap: 20px;
-      padding: 12px 40px;
-      background: rgba(255, 255, 255, 0.05);
-      width: 100%;
-      justify-content: flex-start;
-      align-items: center;
-      flex-wrap: wrap;
-    }
+  .hero-content {
+    max-width: 700px;
+    position: relative;
+    z-index: 2;
+    padding-top: 80px;
+  }
 
-    .vital-item {
-      display: flex;
-      gap: 4px;
-      align-items: center;
-    }
+  .hero-wordmark {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(5rem, 14vw, 10rem);
+    letter-spacing: 0.18em;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
 
-    .vital-label {
-      font-size: 11px;
-      font-weight: 500;
-      color: rgba(255, 255, 255, 0.6);
-    }
+  .hero-tagline {
+    font-family: 'Barlow', sans-serif;
+    font-style: italic;
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    color: var(--cyan);
+    margin-bottom: 2rem;
+  }
 
-    .vital-value {
-      font-size: 11px;
-      font-weight: 400;
-      color: #fff;
-    }
+  .hero-divider {
+    width: 420px;
+    height: 2px;
+    background: var(--border);
+    margin-bottom: 2rem;
+  }
 
-    .hello-link {
-      margin-left: auto;
-      font-size: 11px;
-      font-weight: 400;
-    }
+  .hero-desc {
+    color: var(--slate);
+    font-size: 1rem;
+    margin-bottom: 2.5rem;
+    max-width: 520px;
+    line-height: 1.7;
+  }
 
-    .hello-link a {
-      color: rgba(255, 255, 255, 0.7);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.8rem 2rem;
+    background: transparent;
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
 
-    .hello-link a:hover {
-      color: #fff;
-      text-decoration: underline;
-    }
+  .hero-cta:hover {
+    background: var(--cyan);
+    color: var(--bg);
+  }
 
-    @media (max-width: 1200px) {
-      .main-container {
-        padding: 40px 20px;
-        overflow-x: auto;
-      }
+  /* Stats row */
+  .stats-row {
+    display: flex;
+    gap: 3rem;
+    margin-top: 4rem;
+    flex-wrap: wrap;
+  }
 
-      .sentence-container {
-        min-width: 1000px;
-        justify-content: flex-start;
-      }
+  .stat-item .stat-val {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 2rem;
+    color: var(--cyan);
+    display: block;
+  }
 
-      .sentence-text {
-        font-size: 14px;
-      }
+  .stat-item .stat-lbl {
+    font-size: 0.78rem;
+    color: var(--slate);
+    letter-spacing: 0.05em;
+  }
 
-      .slot-column {
-        width: 160px;
-        height: 180px;
-      }
-    }
-  </style>
+  /* Hero orb */
+  .hero-orb {
+    position: absolute;
+    right: 4%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: min(480px, 42vw);
+    height: min(480px, 42vw);
+    z-index: 1;
+  }
+
+  .orb-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(0,194,255,0.15);
+    background: rgba(0,194,255,0.06);
+  }
+
+  .orb-ring:nth-child(1) { inset: 0; }
+  .orb-ring:nth-child(2) { inset: 12%; background: rgba(0,194,255,0.1); border-color: rgba(0,194,255,0.22); }
+  .orb-ring:nth-child(3) { inset: 26%; background: rgba(0,194,255,0.18); border-color: rgba(0,194,255,0.35); }
+  .orb-ring:nth-child(4) { inset: 40%; background: rgba(0,194,255,0.52); border: none; }
+
+  /* ── PROBLEMS ── */
+  .problems-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-top: 1rem;
+  }
+
+  .problem-card {
+    background: var(--bg3);
+    padding: 1.8rem 1.6rem;
+    position: relative;
+    border-left: 3px solid var(--red);
+  }
+
+  .problem-card:nth-child(even) {
+    border-left-color: var(--amber);
+  }
+
+  .problem-card h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--red);
+    margin-bottom: 0.7rem;
+    letter-spacing: 0.02em;
+  }
+
+  .problem-card:nth-child(even) h3 { color: var(--amber); }
+
+  .problem-card p {
+    font-size: 0.9rem;
+    color: var(--slate);
+    line-height: 1.65;
+  }
+
+  /* Full-width card */
+  .problem-card.full {
+    grid-column: 1 / -1;
+    border-left-color: var(--red);
+  }
+  .problem-card.full h3 { color: var(--red); }
+
+  /* ── SOLUTIONS ── */
+  .solutions-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .sol-card {
+    background: var(--bg3);
+    padding: 1.5rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    border-top: 3px solid var(--cyan);
+  }
+
+  .sol-card:nth-child(2) { border-top-color: var(--green); }
+  .sol-card:nth-child(3) { border-top-color: var(--amber); }
+  .sol-card:nth-child(4) { border-top-color: var(--slate); }
+  .sol-card:nth-child(5) { border-top-color: var(--red); }
+
+  .sol-metric {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: var(--cyan);
+    text-align: center;
+    margin-bottom: 0.15rem;
+  }
+
+  .sol-card:nth-child(2) .sol-metric { color: var(--green); }
+  .sol-card:nth-child(3) .sol-metric { color: var(--amber); }
+  .sol-card:nth-child(4) .sol-metric { color: var(--slate); }
+  .sol-card:nth-child(5) .sol-metric { color: var(--red); }
+
+  .sol-metric-lbl {
+    font-size: 0.65rem;
+    color: var(--dim);
+    text-align: center;
+    letter-spacing: 0.08em;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+  }
+
+  .sol-divider {
+    height: 1px;
+    background: var(--border);
+    margin-bottom: 0.9rem;
+  }
+
+  .sol-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--white);
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+  }
+
+  .sol-tag {
+    font-size: 0.65rem;
+    color: var(--dim);
+    font-style: italic;
+    margin-bottom: 0.8rem;
+  }
+
+  .sol-body {
+    font-size: 0.78rem;
+    color: var(--slate);
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  /* ── PLATFORM STACK ── */
+  .stack-layers {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .stack-layer {
+    background: var(--bg3);
+    display: grid;
+    grid-template-columns: 4px 1fr auto;
+    align-items: center;
+    gap: 0;
+    min-height: 68px;
+  }
+
+  .layer-bar {
+    align-self: stretch;
+    min-height: 68px;
+  }
+
+  .layer-content {
+    padding: 0.9rem 1.5rem;
+  }
+
+  .layer-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .layer-desc {
+    font-size: 0.78rem;
+    color: var(--slate);
+  }
+
+  .layer-tag {
+    margin: 0.9rem 1.5rem;
+    padding: 0.2rem 0.6rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    border: 1px solid;
+    white-space: nowrap;
+    align-self: center;
+  }
+
+  .boundary-marker {
+    background: rgba(255,77,109,0.08);
+    border-top: 2px solid var(--red) !important;
+    padding: 0.3rem 1.5rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--red);
+    letter-spacing: 0.12em;
+    text-align: right;
+    grid-column: 1/-1;
+  }
+
+  /* ── MEMORY ── */
+  .memory-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 1px;
+  }
+
+  .memory-card {
+    background: var(--bg3);
+    padding: 1.6rem 1.4rem;
+    border-top: 3px solid var(--cyan);
+  }
+
+  .memory-card:nth-child(2) { border-top-color: var(--green); }
+  .memory-card:nth-child(3) { border-top-color: var(--amber); }
+
+  .memory-card h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--cyan);
+    margin-bottom: 0.7rem;
+  }
+
+  .memory-card:nth-child(2) h3 { color: var(--green); }
+  .memory-card:nth-child(3) h3 { color: var(--amber); }
+
+  .memory-card p {
+    font-size: 0.88rem;
+    color: var(--slate);
+    line-height: 1.65;
+    margin-bottom: 0.8rem;
+  }
+
+  .memory-use {
+    font-size: 0.82rem;
+    color: var(--cyan);
+    font-style: italic;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid rgba(0,194,255,0.2);
+    background: rgba(0,194,255,0.05);
+    line-height: 1.5;
+  }
+
+  .memory-card:nth-child(2) .memory-use {
+    color: var(--green);
+    border-color: rgba(0,229,160,0.2);
+    background: rgba(0,229,160,0.05);
+  }
+
+  .memory-card:nth-child(3) .memory-use {
+    color: var(--amber);
+    border-color: rgba(255,140,66,0.2);
+    background: rgba(255,140,66,0.05);
+  }
+
+  .audit-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .audit-card {
+    background: var(--bg3);
+    padding: 1.4rem 1.4rem;
+    border-left: 3px solid var(--cyan);
+  }
+
+  .audit-card:nth-child(2) { border-left-color: var(--amber); }
+
+  .audit-card h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--cyan);
+    margin-bottom: 0.6rem;
+  }
+
+  .audit-card:nth-child(2) h3 { color: var(--amber); }
+
+  .audit-card p {
+    font-size: 0.88rem;
+    color: var(--slate);
+    line-height: 1.65;
+  }
+
+  /* ── WHERE WE ARE ── */
+  .status-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .status-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .status-item {
+    background: var(--bg3);
+    padding: 1rem 1.2rem 1rem 1.4rem;
+    border-left: 3px solid var(--cyan);
+  }
+
+  .status-item-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--cyan);
+    margin-bottom: 0.25rem;
+  }
+
+  .status-item p {
+    font-size: 0.82rem;
+    color: var(--slate);
+    line-height: 1.55;
+  }
+
+  .why-box {
+    background: var(--bg3);
+    border: 1px solid var(--green);
+    border-top: 3px solid var(--green);
+    padding: 1.6rem;
+  }
+
+  .why-box h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--green);
+    margin-bottom: 1.2rem;
+  }
+
+  .why-item {
+    margin-bottom: 1rem;
+  }
+
+  .why-item h4 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: var(--white);
+    margin-bottom: 0.2rem;
+  }
+
+  .why-item p {
+    font-size: 0.82rem;
+    color: var(--slate);
+    line-height: 1.55;
+  }
+
+  /* ── DEPLOYMENT ── */
+  .deploy-grid {
+    display: block;
+    border: 1px solid var(--border);
+    background: var(--border);
+  }
+
+  .req-list {
+    background: var(--bg3);
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: transparent;
+  }
+
+  .req-item {
+    background: var(--bg3);
+    padding: 0.85rem 1.2rem;
+    border-left: 3px solid var(--green);
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .req-item-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--green);
+  }
+
+  .req-item-fit {
+    font-size: 0.8rem;
+    color: var(--slate);
+    line-height: 1.5;
+  }
+
+  /* ── NEXT STEPS ── */
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .step-card {
+    background: var(--bg3);
+    padding: 2rem 1.6rem;
+    border-top: 3px solid var(--cyan);
+  }
+
+  .step-card:nth-child(2) { border-top-color: var(--green); }
+  .step-card:nth-child(3) { border-top-color: var(--amber); }
+
+  .step-num-lg {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 3rem;
+    color: var(--cyan);
+    line-height: 1;
+    margin-bottom: 0.6rem;
+  }
+
+  .step-card:nth-child(2) .step-num-lg { color: var(--green); }
+  .step-card:nth-child(3) .step-num-lg { color: var(--amber); }
+
+  .step-card h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--white);
+    margin-bottom: 0.8rem;
+  }
+
+  .step-card p {
+    font-size: 0.88rem;
+    color: var(--slate);
+    line-height: 1.65;
+  }
+
+  /* ── CLOSE / CTA ── */
+  #close {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: none;
+    padding: 6rem 4rem;
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid var(--border);
+  }
+
+  .close-content { max-width: 600px; z-index: 2; }
+
+  .close-wordmark {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(4rem, 10vw, 7rem);
+    letter-spacing: 0.18em;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .close-tagline {
+    font-style: italic;
+    color: var(--cyan);
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .close-divider {
+    width: 360px;
+    height: 2px;
+    background: var(--border);
+    margin-bottom: 1.5rem;
+  }
+
+  .close-mission {
+    color: var(--slate);
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .close-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .close-url {
+    color: var(--cyan);
+    text-decoration: none;
+    font-size: 1rem;
+  }
+
+  .close-url:hover { text-decoration: underline; }
+
+  .close-orb {
+    position: absolute;
+    right: 4%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: min(380px, 35vw);
+    height: min(380px, 35vw);
+    z-index: 1;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #060A14;
+    text-align: center;
+    padding: 1.2rem;
+    font-size: 0.72rem;
+    color: var(--dim);
+    letter-spacing: 0.08em;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.52; transform: scale(1); }
+    50%       { opacity: 0.72; transform: scale(1.04); }
+  }
+
+  .hero-content > * {
+    animation: fadeUp 0.7s ease both;
+  }
+
+  .hero-wordmark  { animation-delay: 0.1s; }
+  .hero-tagline   { animation-delay: 0.2s; }
+  .hero-divider   { animation-delay: 0.3s; }
+  .hero-desc      { animation-delay: 0.4s; }
+  .hero-cta       { animation-delay: 0.5s; }
+  .stats-row      { animation-delay: 0.6s; }
+
+  .orb-ring:nth-child(4) {
+    animation: pulse 3s ease-in-out infinite;
+  }
+
+  /* ── UTILITY ── */
+  .mt-sm { margin-top: 1rem; }
+  .text-cyan { color: var(--cyan); }
+  .text-green { color: var(--green); }
+  .text-red { color: var(--red); }
+  .text-amber { color: var(--amber); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 0 1.5rem; }
+    .nav-links { display: none; }
+    #hero { padding: 0 1.5rem; }
+    section { padding: 5rem 1.5rem 3rem; }
+    .hero-orb { opacity: 0.3; width: 320px; height: 320px; }
+    .problems-grid, .solutions-grid, .steps-grid { grid-template-columns: 1fr; }
+    .memory-grid, .status-grid, .audit-row { grid-template-columns: 1fr; }
+    .problem-card.full { grid-column: 1; }
+    #close { padding: 4rem 1.5rem; flex-direction: column; gap: 3rem; }
+    .close-orb { position: relative; right: auto; top: auto; transform: none; width: 240px; height: 240px; }
+    .stats-row { gap: 2rem; }
+  }
+</style>
 </head>
 <body>
-  <div class="main-container">
-    <div class="sentence-container">
-      <!-- <span class="sentence-text">Robot has sensed</span> -->
-      
-      <div class="slot-column perception" id="perception-column">
-        <div class="slot-scroll" id="perception-scroll">
-          <div class="slot-items" id="perception-items"></div>
-        </div>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo"><span class="nav-logo-bright">Bright</span><span class="nav-logo-kibu">KIBU</span></a>
+  <ul class="nav-links">
+    <li><a href="#problem">The Problem</a></li>
+    <li><a href="#solutions">Solutions</a></li>
+    <li><a href="#stack">Platform</a></li>
+    <li><a href="#memory">Memory</a></li>
+    <li><a href="#deployment">Deployment</a></li>
+    <li><a href="#close">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-content">
+    <div class="hero-wordmark">KIBU</div>
+    <div class="hero-tagline">Agentic AI at the Edge</div>
+    <div class="hero-divider"></div>
+    <p class="hero-desc">A hardware-agnostic edge AI reasoning platform. Multi-modal perception, decision fusion, persistent memory, and agentic tool execution — tuned for high inference and reasoning throughput, ultra-low power, and zero cloud dependency.</p>
+    <a href="#problem" class="hero-cta">Explore the Platform →</a>
+    <div class="stats-row">
+      <div class="stat-item"><span class="stat-val">High</span><span class="stat-lbl">Throughput</span></div>
+      <div class="stat-item"><span class="stat-val">Ultra-low</span><span class="stat-lbl">Power</span></div>
+      <div class="stat-item"><span class="stat-val">Zero</span><span class="stat-lbl">Cloud dependency</span></div>
+    </div>
+  </div>
+  <div class="hero-orb">
+    <div class="orb-ring"></div>
+    <div class="orb-ring"></div>
+    <div class="orb-ring"></div>
+    <div class="orb-ring"></div>
+  </div>
+</section>
+
+<!-- THE HARD PROBLEM -->
+<section id="problem">
+  <div class="section-label text-red">The Hard Problem</div>
+  <h2 class="section-title">Edge AI Decision Support Is an Unsolved Engineering Problem</h2>
+  <p class="section-sub">Running multi-modal inference, sensor fusion, memory, and autonomous decision support concurrently at the edge — without cloud, without determinism sacrifices — is not a solved problem.</p>
+
+  <div class="problems-grid">
+    <div class="problem-card full">
+      <h3>Multi-Modal Fusion Without Infrastructure</h3>
+      <p>Raw streams from vision, audio, and sensors must be reduced to structured intelligence on-device. Cloud systems offload this aggregation. At the edge it has to happen locally, in real time, deterministically.</p>
+    </div>
+    <div class="problem-card">
+      <h3>Context Starvation</h3>
+      <p>On-device language models run under severe token constraints. Tool schemas, memory, and conversation history consume the budget before the user message is included. The model never sees enough context to reason well.</p>
+    </div>
+    <div class="problem-card">
+      <h3>Tool Routing Without Infrastructure</h3>
+      <p>Cloud agents use large models and unlimited compute to select tools. At the edge you cannot load every schema on every turn. Naive approaches miss the right tool or time out.</p>
+    </div>
+    <div class="problem-card">
+      <h3>Memory Without Persistence Layer</h3>
+      <p>Cloud AI offloads memory to external databases. When disconnected or the link is unreliable, there is no external store. Memory must live on-device, survive disconnection, and remain queryable under constrained compute.</p>
+    </div>
+    <div class="problem-card">
+      <h3>Real-Time Control + AI Concurrently</h3>
+      <p>Inference alongside hardware control and sensor fusion introduces resource contention. Most edge AI systems avoid this by separating layers. A decision support platform cannot.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTIONS -->
+<section id="solutions">
+  <div class="section-label text-cyan">The Solutions</div>
+  <h2 class="section-title">Five Architectural Answers</h2>
+
+  <div class="solutions-grid">
+    <div class="sol-card">
+      <div class="sol-metric">Bounded</div>
+      <div class="sol-metric-lbl">context window</div>
+      <div class="sol-divider"></div>
+      <div class="sol-title">Conversation Summarization &amp; Token Budget</div>
+      <div class="sol-tag">Solves: Context Starvation</div>
+      <p class="sol-body">Token use is tracked each turn. As the budget tightens, older dialogue is summarized instead of dropped, so the model keeps coherent history within a fixed window—no silent truncation cliff.</p>
+    </div>
+    <div class="sol-card">
+      <div class="sol-metric">Tiered</div>
+      <div class="sol-metric-lbl">tool routing</div>
+      <div class="sol-divider"></div>
+      <div class="sol-title">Semantic Tool Discovery Pipeline</div>
+      <div class="sol-tag">Solves: Tool Routing Without Infrastructure</div>
+      <p class="sol-body">A staged pipeline: fast literal matches first, then embedding search over tool descriptions, with an optional model check only when confidence is unclear. Most turns exit early; heavy inference is the exception.</p>
+    </div>
+    <div class="sol-card">
+      <div class="sol-metric">Zero</div>
+      <div class="sol-metric-lbl">external deps</div>
+      <div class="sol-divider"></div>
+      <div class="sol-title">On-Device Vector Memory Store</div>
+      <div class="sol-tag">Solves: Memory Without Persistence Layer</div>
+      <p class="sol-body">Episodic, semantic, and procedural memory in an on-device vector index—no off-box database. Survives power cycles and loss of connectivity. Retrieval stays within the same compute envelope as inference.</p>
+    </div>
+    <div class="sol-card">
+      <div class="sol-metric">Deterministic</div>
+      <div class="sol-metric-lbl">execution</div>
+      <div class="sol-divider"></div>
+      <div class="sol-title">Typed Message Bus</div>
+      <div class="sol-tag">Solves: Real-Time Control + AI Concurrently</div>
+      <p class="sol-body">Components exchange typed messages over explicit channels and topics so payloads are known at compile time. Hardware control and inference run on separate paths without shared mutable state, cutting cross-talk and contention.</p>
+    </div>
+    <div class="sol-card">
+      <div class="sol-metric">Structured</div>
+      <div class="sol-metric-lbl">not raw streams</div>
+      <div class="sol-divider"></div>
+      <div class="sol-title">Decision-Level Fusion Node</div>
+      <div class="sol-tag">Solves: Multi-Modal Fusion Without Infrastructure</div>
+      <p class="sol-body">A deterministic fusion stage ingests model outputs and emits a single structured world-state update. High-rate sensor output collapses into one decision-grade snapshot; layers above the fusion stage consume typed data—not raw frames.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PLATFORM STACK -->
+<section id="stack">
+  <div class="section-label text-amber">Platform Stack</div>
+  <h2 class="section-title">Hardware-Agnostic Edge AI Architecture</h2>
+
+  <div class="stack-layers">
+    <div class="stack-layer">
+      <div class="layer-bar" style="background:var(--cyan)"></div>
+      <div class="layer-content">
+        <div class="layer-name" style="color:var(--cyan)">Agentic Reasoning Layer</div>
+        <div class="layer-desc">Tool orchestration · Memory management · Behavior planning · Context compression</div>
       </div>
-
-      <span class="sentence-text">and interpreted it as</span>
-
-      <div class="slot-column interpretation" id="interpretation-column">
-        <div class="slot-scroll" id="interpretation-scroll">
-          <div class="slot-items" id="interpretation-items"></div>
-        </div>
+      <div class="layer-tag" style="color:var(--cyan);border-color:var(--cyan)">OPTIONAL</div>
+    </div>
+    <div class="stack-layer">
+      <div class="layer-bar" style="background:var(--red)"></div>
+      <div class="layer-content">
+        <div class="layer-name" style="color:var(--red)">Decision Fusion Layer</div>
+        <div class="layer-desc">Multi-modal fusion · Structured world state · Deterministic execution · Sensitivity boundary</div>
       </div>
-
-      <span class="sentence-text">and decided to</span>
-
-      <div class="slot-column decision" id="decision-column">
-        <div class="slot-scroll" id="decision-scroll">
-          <div class="slot-items" id="decision-items"></div>
-        </div>
+      <div class="layer-tag" style="color:var(--red);border-color:var(--red)">FUSION</div>
+    </div>
+    <div class="boundary-marker">⟵ Fused state · raw sensing boundary</div>
+    <div class="stack-layer">
+      <div class="layer-bar" style="background:var(--green)"></div>
+      <div class="layer-content">
+        <div class="layer-name" style="color:var(--green)">Perception &amp; Inference</div>
+        <div class="layer-desc">Vision · Audio · Speech · Environmental sensing · Object &amp; scene detection · On-device sensor fusion</div>
       </div>
+      <div class="layer-tag" style="color:var(--green);border-color:var(--green)">SOFTWARE</div>
+    </div>
+    <div class="stack-layer">
+      <div class="layer-bar" style="background:var(--amber)"></div>
+      <div class="layer-content">
+        <div class="layer-name" style="color:var(--amber)">Model Runtime</div>
+        <div class="layer-desc">On-device language and vision models · Task-specific workloads · Quantized inference</div>
+      </div>
+      <div class="layer-tag" style="color:var(--amber);border-color:var(--amber)">RUNTIME</div>
+    </div>
+    <div class="stack-layer">
+      <div class="layer-bar" style="background:var(--slate)"></div>
+      <div class="layer-content">
+        <div class="layer-name" style="color:var(--slate)">NPU / Accelerator</div>
+        <div class="layer-desc">NPU or GPU-class accelerators · Pluggable interface · Sized to the deployment envelope</div>
+      </div>
+      <div class="layer-tag" style="color:var(--slate);border-color:var(--slate)">HARDWARE</div>
+    </div>
+    <div class="stack-layer">
+      <div class="layer-bar" style="background:var(--dim)"></div>
+      <div class="layer-content">
+        <div class="layer-name" style="color:var(--dim)">Host Compute</div>
+        <div class="layer-desc">Embedded boards · Edge gateways · Commodity host hardware</div>
+      </div>
+      <div class="layer-tag" style="color:var(--dim);border-color:var(--dim)">HARDWARE</div>
+    </div>
+  </div>
+</section>
 
-      <span class="sentence-text">by performing</span>
+<!-- MEMORY & AUDITABILITY -->
+<section id="memory">
+  <div class="section-label text-green">Memory · Auditability · Security</div>
+  <h2 class="section-title">The Platform Remembers. And Can Account for Itself.</h2>
 
-      <div class="slot-column action" id="action-column">
-        <div class="slot-scroll" id="action-scroll">
-          <div class="slot-items" id="action-items"></div>
-        </div>
+  <div class="memory-grid">
+    <div class="memory-card">
+      <h3>Episodic Memory</h3>
+      <p>Timestamped event log — every perception, decision, and action recorded with context. Survives power cycles.</p>
+      <div class="memory-use">Full mission replay after the link returns. Nothing is lost.</div>
+    </div>
+    <div class="memory-card">
+      <h3>Semantic Memory</h3>
+      <p>Structured knowledge graph of environment, entities, and relationships. Continuously updated by the reasoning layer.</p>
+      <div class="memory-use">Baseline patterns enable anomaly detection without ground contact.</div>
+    </div>
+    <div class="memory-card">
+      <h3>Procedural Memory</h3>
+      <p>Learned behavioral routines encoded from successful past actions. Improves autonomous decision-making over time.</p>
+      <div class="memory-use">Mission efficiency improves across repeated deployments.</div>
+    </div>
+  </div>
+  <div class="audit-row">
+    <div class="audit-card">
+      <h3>Auditability</h3>
+      <p>Episodic memory functions as an AI flight recorder — every event, reasoning step, tool call, and decision is logged and retrievable. Full post-mission forensics without cloud dependency.</p>
+    </div>
+    <div class="audit-card">
+      <h3>Security</h3>
+      <p>Security has to hold at every layer—hardware trust, runtime integrity, data at rest, and operational response—not as a bolt-on at the end.</p>
+    </div>
+  </div>
+</section>
+
+<!-- DEPLOYMENT FIT -->
+<section id="deployment">
+  <div class="section-label text-green">Deployment Fit</div>
+  <h2 class="section-title">Built for Serious Edge Deployments</h2>
+
+  <div class="deploy-grid">
+    <div class="req-list">
+      <div class="req-item">
+        <span class="req-item-title">✓ Long-running, low-touch operation</span>
+        <span class="req-item-fit">Behaviors and on-device memory persist across shifts and downtime—you are not in the loop on every single decision.</span>
+      </div>
+      <div class="req-item">
+        <span class="req-item-title">✓ Offline-first and flaky networks</span>
+        <span class="req-item-fit">No cloud dependency by design. The full reasoning stack keeps working when connectivity drops—or where there is no reliable uplink at all.</span>
+      </div>
+      <div class="req-item">
+        <span class="req-item-title">✓ Tight power and thermal budgets</span>
+        <span class="req-item-fit">Architected for accelerators and embedded hosts; scales to the compute envelope your hardware and budget allow.</span>
+      </div>
+      <div class="req-item">
+        <span class="req-item-title">✓ Many sensor types, one pipeline</span>
+        <span class="req-item-fit">Vision, audio, and environmental inputs fused on-device in real time across sites and asset types.</span>
+      </div>
+      <div class="req-item">
+        <span class="req-item-title">✓ Decision-ready outputs</span>
+        <span class="req-item-fit">Structured conclusions and signals your systems can use—not only raw streams that still need a data center to interpret.</span>
       </div>
     </div>
   </div>
+</section>
 
-  <div class="vitals-row">
-    <div class="vital-item">
-      <span class="vital-label">state:</span>
-      <span class="vital-value" id="state-value">acting</span>
-    </div>
-    <div class="vital-item">
-      <span class="vital-label">temp:</span>
-      <span class="vital-value" id="temp-value">23.8°C</span>
-    </div>
-    <div class="vital-item">
-      <span class="vital-label">humidity:</span>
-      <span class="vital-value" id="humidity-value">48% RH</span>
-    </div>
-    <div class="vital-item">
-      <span class="vital-label">load:</span>
-      <span class="vital-value" id="load-value">12%</span>
-    </div>
-    <div class="hello-link">
-      <a href="mailto:hello@brightkibu.com">say hello</a>
+
+<!-- CLOSE -->
+<section id="close">
+  <div class="close-content">
+    <div class="close-wordmark">KIBU</div>
+    <div class="close-tagline">Agentic AI at the Edge</div>
+    <div class="close-divider"></div>
+    <p class="close-mission">Let's define the mission together.</p>
+    <div class="close-contact">
+      <a href="mailto:hello@brightkibu.com" class="close-url">Say hello · hello@brightkibu.com</a>
     </div>
   </div>
+  <div class="close-orb">
+    <div class="orb-ring"></div>
+    <div class="orb-ring"></div>
+    <div class="orb-ring"></div>
+    <div class="orb-ring"></div>
+  </div>
+</section>
 
-  <script>
-    // Data arrays matching the SwiftUI version
-    const perceptionOptions = [
-      "person detected",
-      "proximity changed",
-      "gaze detected",
-      "pointing gesture",
-      "hand gesture",
-      "audio detected",
-      "voice command",
-      "keyword detected",
-      "time-of-day changed",
-      "morning transition",
-      "evening transition",
-      "temperature changed",
-      "humidity changed",
-      "light level changed",
-      "air quality changed",
-      "water detected",
-      "energy event",
-      "notification received",
-      "user input",
-      "control state changed"
-    ];
+<footer>KIBU Platform &nbsp;·&nbsp; brightkibu.com &nbsp;·&nbsp; 2026</footer>
 
-    const interpretationOptions = [
-      "a noise",
-      "a conversation",
-      "running water",
-      "keyword detected",
-      "voice command",
-      "someone entered",
-      "someone approaching",
-      "someone leaving",
-      "person in intimate zone",
-      "person in personal zone",
-      "morning transition",
-      "afternoon transition",
-      "evening transition",
-      "night transition",
-      "time of day changed",
-      "timer expired",
-      "temperature rising",
-      "temperature dropping",
-      "humidity changed",
-      "light level changed",
-      "air quality changed",
-      "gaze detected",
-      "pointing gesture",
-      "hand gesture",
-      "routine notification",
-      "important notification",
-      "urgent notification",
-      "HomeKit event",
-      "control command",
-      "light control command",
-      "arm movement command",
-      "unknown"
-    ];
-
-    const decisionOptions = [
-      "execute greeting",
-      "acknowledge presence",
-      "show curiosity",
-      "orient toward source",
-      "track person",
-      "adjust lighting",
-      "play audio cue",
-      "update display",
-      "return to idle",
-      "suppress response",
-      "do nothing",
-      "wait for more context"
-    ];
-
-    const actionOptions = [
-      "execute animation",
-      "greeting wave",
-      "curiosity lean",
-      "acknowledgment nod",
-      "awareness lift",
-      "orient and hold",
-      "return to home",
-      "update LED pattern",
-      "adjust brightness",
-      "play audio tone",
-      "center person in frame",
-      "update display chip",
-      "control home device",
-      "stop movement"
-    ];
-
-    // Complete sentence combinations - semantically coherent cognitive processing scenarios
-    const cognitiveSentences = [
-      // Person detection scenarios
-      {
-        perception: perceptionOptions.indexOf("person detected"),
-        interpretation: interpretationOptions.indexOf("someone entered"),
-        decision: decisionOptions.indexOf("execute greeting"),
-        action: actionOptions.indexOf("greeting wave")
-      },
-      {
-        perception: perceptionOptions.indexOf("proximity changed"),
-        interpretation: interpretationOptions.indexOf("someone approaching"),
-        decision: decisionOptions.indexOf("show curiosity"),
-        action: actionOptions.indexOf("curiosity lean")
-      },
-      {
-        perception: perceptionOptions.indexOf("person detected"),
-        interpretation: interpretationOptions.indexOf("person in intimate zone"),
-        decision: decisionOptions.indexOf("acknowledge presence"),
-        action: actionOptions.indexOf("acknowledgment nod")
-      },
-      {
-        perception: perceptionOptions.indexOf("proximity changed"),
-        interpretation: interpretationOptions.indexOf("someone leaving"),
-        decision: decisionOptions.indexOf("return to idle"),
-        action: actionOptions.indexOf("return to home")
-      },
-      // Audio scenarios
-      {
-        perception: perceptionOptions.indexOf("audio detected"),
-        interpretation: interpretationOptions.indexOf("a noise"),
-        decision: decisionOptions.indexOf("orient toward source"),
-        action: actionOptions.indexOf("orient and hold")
-      },
-      {
-        perception: perceptionOptions.indexOf("voice command"),
-        interpretation: interpretationOptions.indexOf("voice command"),
-        decision: decisionOptions.indexOf("wait for more context"),
-        action: actionOptions.indexOf("update display chip")
-      },
-      {
-        perception: perceptionOptions.indexOf("keyword detected"),
-        interpretation: interpretationOptions.indexOf("keyword detected"),
-        decision: decisionOptions.indexOf("start listening"),
-        action: actionOptions.indexOf("play audio tone")
-      },
-      {
-        perception: perceptionOptions.indexOf("audio detected"),
-        interpretation: interpretationOptions.indexOf("a conversation"),
-        decision: decisionOptions.indexOf("do nothing"),
-        action: actionOptions.indexOf("update display chip")
-      },
-      // Gesture scenarios
-      {
-        perception: perceptionOptions.indexOf("gaze detected"),
-        interpretation: interpretationOptions.indexOf("gaze detected"),
-        decision: decisionOptions.indexOf("acknowledge presence"),
-        action: actionOptions.indexOf("awareness lift")
-      },
-      {
-        perception: perceptionOptions.indexOf("pointing gesture"),
-        interpretation: interpretationOptions.indexOf("pointing gesture"),
-        decision: decisionOptions.indexOf("orient toward source"),
-        action: actionOptions.indexOf("orient and hold")
-      },
-      {
-        perception: perceptionOptions.indexOf("hand gesture"),
-        interpretation: interpretationOptions.indexOf("hand gesture"),
-        decision: decisionOptions.indexOf("execute greeting"),
-        action: actionOptions.indexOf("acknowledgment nod")
-      },
-      // Temporal scenarios
-      {
-        perception: perceptionOptions.indexOf("morning transition"),
-        interpretation: interpretationOptions.indexOf("morning transition"),
-        decision: decisionOptions.indexOf("adjust lighting"),
-        action: actionOptions.indexOf("update LED pattern")
-      },
-      {
-        perception: perceptionOptions.indexOf("evening transition"),
-        interpretation: interpretationOptions.indexOf("evening transition"),
-        decision: decisionOptions.indexOf("adjust lighting"),
-        action: actionOptions.indexOf("adjust brightness")
-      },
-      {
-        perception: perceptionOptions.indexOf("time-of-day changed"),
-        interpretation: interpretationOptions.indexOf("time of day changed"),
-        decision: decisionOptions.indexOf("return to idle"),
-        action: actionOptions.indexOf("return to home")
-      },
-      // Environmental scenarios
-      {
-        perception: perceptionOptions.indexOf("temperature changed"),
-        interpretation: interpretationOptions.indexOf("temperature rising"),
-        decision: decisionOptions.indexOf("adjust lighting"),
-        action: actionOptions.indexOf("update LED pattern")
-      },
-      {
-        perception: perceptionOptions.indexOf("light level changed"),
-        interpretation: interpretationOptions.indexOf("light level changed"),
-        decision: decisionOptions.indexOf("adjust lighting"),
-        action: actionOptions.indexOf("adjust brightness")
-      },
-      {
-        perception: perceptionOptions.indexOf("air quality changed"),
-        interpretation: interpretationOptions.indexOf("air quality changed"),
-        decision: decisionOptions.indexOf("update display"),
-        action: actionOptions.indexOf("update display chip")
-      },
-      // Notification scenarios
-      {
-        perception: perceptionOptions.indexOf("notification received"),
-        interpretation: interpretationOptions.indexOf("routine notification"),
-        decision: decisionOptions.indexOf("notify user"),
-        action: actionOptions.indexOf("play audio tone")
-      },
-      {
-        perception: perceptionOptions.indexOf("notification received"),
-        interpretation: interpretationOptions.indexOf("important notification"),
-        decision: decisionOptions.indexOf("notify user"),
-        action: actionOptions.indexOf("acknowledgment nod")
-      },
-      {
-        perception: perceptionOptions.indexOf("notification received"),
-        interpretation: interpretationOptions.indexOf("urgent notification"),
-        decision: decisionOptions.indexOf("notify user"),
-        action: actionOptions.indexOf("execute animation")
-      },
-      // User input scenarios
-      {
-        perception: perceptionOptions.indexOf("user input"),
-        interpretation: interpretationOptions.indexOf("control command"),
-        decision: decisionOptions.indexOf("update display"),
-        action: actionOptions.indexOf("update display chip")
-      },
-      {
-        perception: perceptionOptions.indexOf("user input"),
-        interpretation: interpretationOptions.indexOf("light control command"),
-        decision: decisionOptions.indexOf("adjust lighting"),
-        action: actionOptions.indexOf("control home device")
-      },
-      {
-        perception: perceptionOptions.indexOf("control state changed"),
-        interpretation: interpretationOptions.indexOf("HomeKit event"),
-        decision: decisionOptions.indexOf("update display"),
-        action: actionOptions.indexOf("update display chip")
-      },
-      // Water/energy scenarios
-      {
-        perception: perceptionOptions.indexOf("water detected"),
-        interpretation: interpretationOptions.indexOf("running water"),
-        decision: decisionOptions.indexOf("do nothing"),
-        action: actionOptions.indexOf("update display chip")
-      },
-      {
-        perception: perceptionOptions.indexOf("energy event"),
-        interpretation: interpretationOptions.indexOf("unknown"),
-        decision: decisionOptions.indexOf("wait for more context"),
-        action: actionOptions.indexOf("update display chip")
-      },
-      // Person tracking scenarios
-      {
-        perception: perceptionOptions.indexOf("person detected"),
-        interpretation: interpretationOptions.indexOf("person in personal zone"),
-        decision: decisionOptions.indexOf("track person"),
-        action: actionOptions.indexOf("center person in frame")
-      },
-      {
-        perception: perceptionOptions.indexOf("gaze detected"),
-        interpretation: interpretationOptions.indexOf("gaze detected"),
-        decision: decisionOptions.indexOf("track person"),
-        action: actionOptions.indexOf("orient and hold")
-      }
-    ];
-
-    // State
-    let currentSentenceIndex = 0;
-    let perceptionIndex = perceptionOptions.length - 1;
-    let interpretationIndex = interpretationOptions.length - 1;
-    let decisionIndex = decisionOptions.length - 1;
-    let actionIndex = actionOptions.length - 1;
-
-    // Initialize columns
-    function initializeColumn(containerId, itemsId, options) {
-      const container = document.getElementById(containerId);
-      const itemsContainer = document.getElementById(itemsId);
-      
-      options.forEach((item, index) => {
-        const itemEl = document.createElement('div');
-        itemEl.className = 'slot-item';
-        itemEl.textContent = item;
-        itemEl.id = `${containerId}-item-${index}`;
-        itemsContainer.appendChild(itemEl);
-      });
-      
-      updateColumnOpacity(containerId, options.length, 0);
-    }
-
-    // Update column opacity based on selected index
-    function updateColumnOpacity(columnId, totalItems, selectedIndex) {
-      for (let i = 0; i < totalItems; i++) {
-        const item = document.getElementById(`${columnId}-item-${i}`);
-        if (item) {
-          const distance = Math.abs(i - selectedIndex);
-          item.className = `slot-item distance-${Math.min(distance, 3)}`;
-        }
-      }
-    }
-
-    // Scroll to index
-    function scrollToIndex(columnId, scrollId, itemsId, options, index) {
-      const scrollContainer = document.getElementById(scrollId);
-      const itemsContainer = document.getElementById(itemsId);
-      const item = document.getElementById(`${columnId}-item-${index}`);
-      
-      if (item && scrollContainer) {
-        const itemTop = item.offsetTop;
-        const containerHeight = scrollContainer.clientHeight;
-        const scrollPosition = itemTop - (containerHeight / 2) + 20; // 20px = half of item height
-        
-        scrollContainer.scrollTo({
-          top: scrollPosition,
-          behavior: 'smooth'
-        });
-        
-        updateColumnOpacity(columnId, options.length, index);
-      }
-    }
-
-    // Highlight column
-    function highlightColumn(columnId, highlight) {
-      const column = document.getElementById(columnId);
-      if (column) {
-        if (highlight) {
-          column.classList.add('highlighted');
-        } else {
-          column.classList.remove('highlighted');
-        }
-      }
-    }
-
-    // Process a complete cognitive sentence
-    function processCognitiveSentence(sentence) {
-      // Step 1: Perception (500ms delay)
-      setTimeout(() => {
-        perceptionIndex = sentence.perception;
-        scrollToIndex('perception-column', 'perception-scroll', 'perception-items', perceptionOptions, perceptionIndex);
-        highlightColumn('perception-column', true);
-        setTimeout(() => highlightColumn('perception-column', false), 250);
-      }, 500);
-
-      // Step 2: Interpretation (650ms delay - 150ms after perception)
-      setTimeout(() => {
-        interpretationIndex = sentence.interpretation;
-        scrollToIndex('interpretation-column', 'interpretation-scroll', 'interpretation-items', interpretationOptions, interpretationIndex);
-        highlightColumn('interpretation-column', true);
-        setTimeout(() => highlightColumn('interpretation-column', false), 250);
-      }, 650);
-
-      // Step 3: Decision (800ms delay - 150ms after interpretation)
-      setTimeout(() => {
-        decisionIndex = sentence.decision;
-        scrollToIndex('decision-column', 'decision-scroll', 'decision-items', decisionOptions, decisionIndex);
-        highlightColumn('decision-column', true);
-        setTimeout(() => highlightColumn('decision-column', false), 250);
-      }, 800);
-
-      // Step 4: Action (950ms delay - 150ms after decision)
-      setTimeout(() => {
-        actionIndex = sentence.action;
-        scrollToIndex('action-column', 'action-scroll', 'action-items', actionOptions, actionIndex);
-        highlightColumn('action-column', true);
-        setTimeout(() => highlightColumn('action-column', false), 250);
-      }, 950);
-    }
-
-    // Cycle through cognitive sentences
-    function cycleCognitiveSentences() {
-      // Get current sentence
-      const sentence = cognitiveSentences[currentSentenceIndex];
-      
-      // Process the complete sentence
-      processCognitiveSentence(sentence);
-      
-      // Move to next sentence
-      currentSentenceIndex = (currentSentenceIndex + 1) % cognitiveSentences.length;
-      
-      // Schedule next cycle (5 seconds total: 0.5s + 0.15s + 0.15s + 0.15s + 4s pause)
-      setTimeout(cycleCognitiveSentences, 5000);
-    }
-
-    // Initialize all columns
-    initializeColumn('perception-column', 'perception-items', perceptionOptions);
-    initializeColumn('interpretation-column', 'interpretation-items', interpretationOptions);
-    initializeColumn('decision-column', 'decision-items', decisionOptions);
-    initializeColumn('action-column', 'action-items', actionOptions);
-
-    // Initial scroll to center items
-    setTimeout(() => {
-      scrollToIndex('perception-column', 'perception-scroll', 'perception-items', perceptionOptions, perceptionIndex);
-      scrollToIndex('interpretation-column', 'interpretation-scroll', 'interpretation-items', interpretationOptions, interpretationIndex);
-      scrollToIndex('decision-column', 'decision-scroll', 'decision-items', decisionOptions, decisionIndex);
-      scrollToIndex('action-column', 'action-scroll', 'action-items', actionOptions, actionIndex);
-      
-      // Start cognitive processing cycle after initial positioning
-      setTimeout(cycleCognitiveSentences, 1000);
-    }, 200);
-  </script>
 </body>
 </html>
