@@ -821,6 +821,7 @@
     <li><a href="#problem">The Problem</a></li>
     <li><a href="#solutions">Solutions</a></li>
     <li><a href="#stack">Platform</a></li>
+    <li><a href="#governance">Governance</a></li>
     <li><a href="#memory">Memory</a></li>
     <li><a href="#deployment">Deployment</a></li>
     <li><a href="#close">Contact</a></li>
@@ -937,7 +938,7 @@
       <div class="layer-bar" style="background:var(--cyan)"></div>
       <div class="layer-content">
         <div class="layer-name" style="color:var(--cyan)">Agentic Reasoning Layer</div>
-        <div class="layer-desc">Tool orchestration · Memory management · Behavior planning · Context compression</div>
+        <div class="layer-desc">Tool orchestration · Policy-governed execution · Memory · Behavior planning · Context compression</div>
       </div>
       <div class="layer-tag" style="color:var(--cyan);border-color:var(--cyan)">OPTIONAL</div>
     </div>
@@ -981,6 +982,24 @@
         <div class="layer-desc">Embedded boards · Edge gateways · Commodity host hardware</div>
       </div>
       <div class="layer-tag" style="color:var(--dim);border-color:var(--dim)">HARDWARE</div>
+    </div>
+  </div>
+</section>
+
+<!-- GOVERNANCE & CAPABILITY -->
+<section id="governance">
+  <div class="section-label text-cyan">Composition &amp; governance</div>
+  <h2 class="section-title">Software-Defined Capabilities &amp; Intent Policy</h2>
+  <p class="section-sub">Declarative profiles choose which hardware and agent features exist in a given deployment. Intent policy separates what the model proposes from what the platform may execute—so safety and operations stay explicit, reviewable, and updatable as configuration.</p>
+
+  <div class="audit-row">
+    <div class="audit-card">
+      <h3>Capability selection &amp; composition</h3>
+      <p>System definitions are data, not compile-time flags: inference, sensing, effectors, behaviors, and model assets are chosen through profiles. Subsystems and the message graph are composed for that profile only—if a capability is absent, it is not constructed and its pipelines are not wired, avoiding dead topics and wasted compute. Retarget the same runtime to different SKUs or environments by swapping configuration instead of rebuilding the stack.</p>
+    </div>
+    <div class="audit-card">
+      <h3>Intent policy governance</h3>
+      <p>After tool selection, ordered rules evaluate each proposed action against live platform state—interaction mode, rate limits, proximity, quiet windows, and similar signals. Policy can veto execution, answer with text alone, or steer toward an alternate tool when conditions match. Rules ship as versioned configuration, so governance evolves with the product without forking the agent.</p>
     </div>
   </div>
 </section>
