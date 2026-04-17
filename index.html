@@ -1,1095 +1,1455 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KIBU — Agentic AI at the Edge</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bright KIBU — Agentic AI at the Edge</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Allura&family=Barlow:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Barlow+Condensed:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #0A0F1E;
-    --bg2: #0D1528;
-    --bg3: #111E35;
-    --border: #1A2E50;
-    --cyan: #00C2FF;
-    --green: #00E5A0;
-    --red: #FF4D6D;
-    --amber: #FF8C42;
-    --slate: #8BAFD4;
-    --dim: #4A6A8A;
-    --white: #FFFFFF;
-    /* Nav “Bright” script: high-luminance neon, readable on --bg */
-    --bright-neon: #DFF06A;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--bg);
-    color: var(--white);
-    font-family: 'Barlow', sans-serif;
-    font-size: 16px;
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
-
-  /* ── NAV ── */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 3rem;
-    height: 60px;
-    background: rgba(10,15,30,0.92);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .nav-logo {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.55rem;
-    text-decoration: none;
-    color: var(--white);
-  }
-
-  .nav-logo-bright {
-    font-family: 'Allura', cursive;
-    font-weight: 400;
-    font-size: 1.85rem;
-    line-height: 1;
-    color: var(--bright-neon);
-    letter-spacing: 0.02em;
-    transform: translateY(0.06em);
-    text-shadow: 0 0 1px rgba(10, 15, 30, 0.9);
-  }
-
-  .nav-logo-kibu {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 800;
-    font-size: 1.5rem;
-    letter-spacing: 0.15em;
-  }
-
-  .nav-links {
-    display: flex;
-    gap: 2.5rem;
-    list-style: none;
-  }
-
-  .nav-links a {
-    color: var(--slate);
-    text-decoration: none;
-    font-size: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    transition: color 0.2s;
-  }
-
-  .nav-links a:hover { color: var(--cyan); }
-
-  /* ── LEFT ACCENT BAR ── */
-  .section-bar {
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 4px;
-  }
-
-  /* ── SECTIONS ── */
-  section {
-    position: relative;
-    padding: 7rem 4rem 5rem;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  section + section {
-    border-top: 1px solid var(--border);
-  }
-
-  .section-label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    margin-bottom: 0.75rem;
-  }
-
-  .section-title {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 800;
-    font-size: clamp(2rem, 4vw, 3.2rem);
-    line-height: 1.1;
-    color: var(--white);
-    margin-bottom: 1rem;
-  }
-
-  .section-sub {
-    color: var(--slate);
-    font-style: italic;
-    font-size: 1rem;
-    max-width: 820px;
-    margin-bottom: 3rem;
-  }
-
-  /* ── HERO ── */
-  #hero {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    padding-top: 0;
-    max-width: none;
-    padding: 0 4rem;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .hero-content {
-    max-width: 700px;
-    position: relative;
-    z-index: 2;
-    padding-top: 80px;
-  }
-
-  .hero-wordmark {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 800;
-    font-size: clamp(5rem, 14vw, 10rem);
-    letter-spacing: 0.18em;
-    color: var(--white);
-    line-height: 1;
-    margin-bottom: 0.5rem;
-  }
-
-  .hero-tagline {
-    font-family: 'Barlow', sans-serif;
-    font-style: italic;
-    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
-    color: var(--cyan);
-    margin-bottom: 2rem;
-  }
-
-  .hero-divider {
-    width: 420px;
-    height: 2px;
-    background: var(--border);
-    margin-bottom: 2rem;
-  }
-
-  .hero-desc {
-    color: var(--slate);
-    font-size: 1rem;
-    margin-bottom: 2.5rem;
-    max-width: 520px;
-    line-height: 1.7;
-  }
-
-  .hero-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0.8rem 2rem;
-    background: transparent;
-    border: 1px solid var(--cyan);
-    color: var(--cyan);
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 0.85rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    text-decoration: none;
-    transition: all 0.2s;
-  }
-
-  .hero-cta:hover {
-    background: var(--cyan);
-    color: var(--bg);
-  }
-
-  /* Stats row */
-  .stats-row {
-    display: flex;
-    gap: 3rem;
-    margin-top: 4rem;
-    flex-wrap: wrap;
-  }
-
-  .stat-item .stat-val {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 800;
-    font-size: 2rem;
-    color: var(--cyan);
-    display: block;
-  }
-
-  .stat-item .stat-lbl {
-    font-size: 0.78rem;
-    color: var(--slate);
-    letter-spacing: 0.05em;
-  }
-
-  /* Hero orb */
-  .hero-orb {
-    position: absolute;
-    right: 4%;
-    top: 50%;
-    transform: translateY(-50%);
-    width: min(480px, 42vw);
-    height: min(480px, 42vw);
-    z-index: 1;
-  }
-
-  .orb-ring {
-    position: absolute;
-    border-radius: 50%;
-    border: 1px solid rgba(0,194,255,0.15);
-    background: rgba(0,194,255,0.06);
-  }
-
-  .orb-ring:nth-child(1) { inset: 0; }
-  .orb-ring:nth-child(2) { inset: 12%; background: rgba(0,194,255,0.1); border-color: rgba(0,194,255,0.22); }
-  .orb-ring:nth-child(3) { inset: 26%; background: rgba(0,194,255,0.18); border-color: rgba(0,194,255,0.35); }
-  .orb-ring:nth-child(4) { inset: 40%; background: rgba(0,194,255,0.52); border: none; }
-
-  /* ── PROBLEMS ── */
-  .problems-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    margin-top: 1rem;
-  }
-
-  .problem-card {
-    background: var(--bg3);
-    padding: 1.8rem 1.6rem;
-    position: relative;
-    border-left: 3px solid var(--red);
-  }
-
-  .problem-card:nth-child(even) {
-    border-left-color: var(--amber);
-  }
-
-  .problem-card h3 {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 1.05rem;
-    color: var(--red);
-    margin-bottom: 0.7rem;
-    letter-spacing: 0.02em;
-  }
-
-  .problem-card:nth-child(even) h3 { color: var(--amber); }
-
-  .problem-card p {
-    font-size: 0.9rem;
-    color: var(--slate);
-    line-height: 1.65;
-  }
-
-  /* Full-width card */
-  .problem-card.full {
-    grid-column: 1 / -1;
-    border-left-color: var(--red);
-  }
-  .problem-card.full h3 { color: var(--red); }
-
-  /* ── SOLUTIONS ── */
-  .solutions-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-  }
-
-  .sol-card {
-    background: var(--bg3);
-    padding: 1.5rem 1.2rem;
-    display: flex;
-    flex-direction: column;
-    border-top: 3px solid var(--cyan);
-  }
-
-  .sol-card:nth-child(2) { border-top-color: var(--green); }
-  .sol-card:nth-child(3) { border-top-color: var(--amber); }
-  .sol-card:nth-child(4) { border-top-color: var(--slate); }
-  .sol-card:nth-child(5) { border-top-color: var(--red); }
-
-  .sol-metric {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 800;
-    font-size: 1.5rem;
-    color: var(--cyan);
-    text-align: center;
-    margin-bottom: 0.15rem;
-  }
-
-  .sol-card:nth-child(2) .sol-metric { color: var(--green); }
-  .sol-card:nth-child(3) .sol-metric { color: var(--amber); }
-  .sol-card:nth-child(4) .sol-metric { color: var(--slate); }
-  .sol-card:nth-child(5) .sol-metric { color: var(--red); }
-
-  .sol-metric-lbl {
-    font-size: 0.65rem;
-    color: var(--dim);
-    text-align: center;
-    letter-spacing: 0.08em;
-    margin-bottom: 1rem;
-    text-transform: uppercase;
-  }
-
-  .sol-divider {
-    height: 1px;
-    background: var(--border);
-    margin-bottom: 0.9rem;
-  }
-
-  .sol-title {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 0.95rem;
-    color: var(--white);
-    margin-bottom: 0.5rem;
-    line-height: 1.3;
-  }
-
-  .sol-tag {
-    font-size: 0.65rem;
-    color: var(--dim);
-    font-style: italic;
-    margin-bottom: 0.8rem;
-  }
-
-  .sol-body {
-    font-size: 0.78rem;
-    color: var(--slate);
-    line-height: 1.6;
-    flex: 1;
-  }
-
-  /* ── PLATFORM STACK ── */
-  .stack-layers {
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-  }
-
-  .stack-layer {
-    background: var(--bg3);
-    display: grid;
-    grid-template-columns: 4px 1fr auto;
-    align-items: center;
-    gap: 0;
-    min-height: 68px;
-  }
-
-  .layer-bar {
-    align-self: stretch;
-    min-height: 68px;
-  }
-
-  .layer-content {
-    padding: 0.9rem 1.5rem;
-  }
-
-  .layer-name {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 1rem;
-    margin-bottom: 0.2rem;
-  }
-
-  .layer-desc {
-    font-size: 0.78rem;
-    color: var(--slate);
-  }
-
-  .layer-tag {
-    margin: 0.9rem 1.5rem;
-    padding: 0.2rem 0.6rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.6rem;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    border: 1px solid;
-    white-space: nowrap;
-    align-self: center;
-  }
-
-  .boundary-marker {
-    background: rgba(255,77,109,0.08);
-    border-top: 2px solid var(--red) !important;
-    padding: 0.3rem 1.5rem;
-    font-size: 0.7rem;
-    font-weight: 700;
-    color: var(--red);
-    letter-spacing: 0.12em;
-    text-align: right;
-    grid-column: 1/-1;
-  }
-
-  /* ── MEMORY ── */
-  .memory-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    margin-bottom: 1px;
-  }
-
-  .memory-card {
-    background: var(--bg3);
-    padding: 1.6rem 1.4rem;
-    border-top: 3px solid var(--cyan);
-  }
-
-  .memory-card:nth-child(2) { border-top-color: var(--green); }
-  .memory-card:nth-child(3) { border-top-color: var(--amber); }
-
-  .memory-card h3 {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 1.05rem;
-    color: var(--cyan);
-    margin-bottom: 0.7rem;
-  }
-
-  .memory-card:nth-child(2) h3 { color: var(--green); }
-  .memory-card:nth-child(3) h3 { color: var(--amber); }
-
-  .memory-card p {
-    font-size: 0.88rem;
-    color: var(--slate);
-    line-height: 1.65;
-    margin-bottom: 0.8rem;
-  }
-
-  .memory-use {
-    font-size: 0.82rem;
-    color: var(--cyan);
-    font-style: italic;
-    padding: 0.6rem 0.8rem;
-    border: 1px solid rgba(0,194,255,0.2);
-    background: rgba(0,194,255,0.05);
-    line-height: 1.5;
-  }
-
-  .memory-card:nth-child(2) .memory-use {
-    color: var(--green);
-    border-color: rgba(0,229,160,0.2);
-    background: rgba(0,229,160,0.05);
-  }
-
-  .memory-card:nth-child(3) .memory-use {
-    color: var(--amber);
-    border-color: rgba(255,140,66,0.2);
-    background: rgba(255,140,66,0.05);
-  }
-
-  .audit-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-  }
-
-  .audit-card {
-    background: var(--bg3);
-    padding: 1.4rem 1.4rem;
-    border-left: 3px solid var(--cyan);
-  }
-
-  .audit-card:nth-child(2) { border-left-color: var(--amber); }
-
-  .audit-card h3 {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 1rem;
-    color: var(--cyan);
-    margin-bottom: 0.6rem;
-  }
-
-  .audit-card:nth-child(2) h3 { color: var(--amber); }
-
-  .audit-card p {
-    font-size: 0.88rem;
-    color: var(--slate);
-    line-height: 1.65;
-  }
-
-  /* ── WHERE WE ARE ── */
-  .status-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-  }
-
-  .status-items {
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-  }
-
-  .status-item {
-    background: var(--bg3);
-    padding: 1rem 1.2rem 1rem 1.4rem;
-    border-left: 3px solid var(--cyan);
-  }
-
-  .status-item-title {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 0.95rem;
-    color: var(--cyan);
-    margin-bottom: 0.25rem;
-  }
-
-  .status-item p {
-    font-size: 0.82rem;
-    color: var(--slate);
-    line-height: 1.55;
-  }
-
-  .why-box {
-    background: var(--bg3);
-    border: 1px solid var(--green);
-    border-top: 3px solid var(--green);
-    padding: 1.6rem;
-  }
-
-  .why-box h3 {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 1rem;
-    color: var(--green);
-    margin-bottom: 1.2rem;
-  }
-
-  .why-item {
-    margin-bottom: 1rem;
-  }
-
-  .why-item h4 {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 0.92rem;
-    color: var(--white);
-    margin-bottom: 0.2rem;
-  }
-
-  .why-item p {
-    font-size: 0.82rem;
-    color: var(--slate);
-    line-height: 1.55;
-  }
-
-  /* ── DEPLOYMENT ── */
-  .deploy-grid {
-    display: block;
-    border: 1px solid var(--border);
-    background: var(--border);
-  }
-
-  .req-list {
-    background: var(--bg3);
-    padding: 1.2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-    background: transparent;
-  }
-
-  .req-item {
-    background: var(--bg3);
-    padding: 0.85rem 1.2rem;
-    border-left: 3px solid var(--green);
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-  }
-
-  .req-item-title {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 0.9rem;
-    color: var(--green);
-  }
-
-  .req-item-fit {
-    font-size: 0.8rem;
-    color: var(--slate);
-    line-height: 1.5;
-  }
-
-  /* ── NEXT STEPS ── */
-  .steps-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-  }
-
-  .step-card {
-    background: var(--bg3);
-    padding: 2rem 1.6rem;
-    border-top: 3px solid var(--cyan);
-  }
-
-  .step-card:nth-child(2) { border-top-color: var(--green); }
-  .step-card:nth-child(3) { border-top-color: var(--amber); }
-
-  .step-num-lg {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 800;
-    font-size: 3rem;
-    color: var(--cyan);
-    line-height: 1;
-    margin-bottom: 0.6rem;
-  }
-
-  .step-card:nth-child(2) .step-num-lg { color: var(--green); }
-  .step-card:nth-child(3) .step-num-lg { color: var(--amber); }
-
-  .step-card h3 {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 1.05rem;
-    color: var(--white);
-    margin-bottom: 0.8rem;
-  }
-
-  .step-card p {
-    font-size: 0.88rem;
-    color: var(--slate);
-    line-height: 1.65;
-  }
-
-  /* ── CLOSE / CTA ── */
-  #close {
-    min-height: 60vh;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    max-width: none;
-    padding: 6rem 4rem;
-    position: relative;
-    overflow: hidden;
-    border-top: 1px solid var(--border);
-  }
-
-  .close-content { max-width: 600px; z-index: 2; }
-
-  .close-wordmark {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 800;
-    font-size: clamp(4rem, 10vw, 7rem);
-    letter-spacing: 0.18em;
-    color: var(--white);
-    line-height: 1;
-    margin-bottom: 0.5rem;
-  }
-
-  .close-tagline {
-    font-style: italic;
-    color: var(--cyan);
-    font-size: 1.2rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .close-divider {
-    width: 360px;
-    height: 2px;
-    background: var(--border);
-    margin-bottom: 1.5rem;
-  }
-
-  .close-mission {
-    color: var(--slate);
-    font-size: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .close-contact {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-
-  .close-url {
-    color: var(--cyan);
-    text-decoration: none;
-    font-size: 1rem;
-  }
-
-  .close-url:hover { text-decoration: underline; }
-
-  .close-orb {
-    position: absolute;
-    right: 4%;
-    top: 50%;
-    transform: translateY(-50%);
-    width: min(380px, 35vw);
-    height: min(380px, 35vw);
-    z-index: 1;
-  }
-
-  /* ── FOOTER ── */
-  footer {
-    background: #060A14;
-    text-align: center;
-    padding: 1.2rem;
-    font-size: 0.72rem;
-    color: var(--dim);
-    letter-spacing: 0.08em;
-    border-top: 1px solid var(--border);
-  }
-
-  /* ── ANIMATIONS ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 0.52; transform: scale(1); }
-    50%       { opacity: 0.72; transform: scale(1.04); }
-  }
-
-  .hero-content > * {
-    animation: fadeUp 0.7s ease both;
-  }
-
-  .hero-wordmark  { animation-delay: 0.1s; }
-  .hero-tagline   { animation-delay: 0.2s; }
-  .hero-divider   { animation-delay: 0.3s; }
-  .hero-desc      { animation-delay: 0.4s; }
-  .hero-cta       { animation-delay: 0.5s; }
-  .stats-row      { animation-delay: 0.6s; }
-
-  .orb-ring:nth-child(4) {
-    animation: pulse 3s ease-in-out infinite;
-  }
-
-  /* ── UTILITY ── */
-  .mt-sm { margin-top: 1rem; }
-  .text-cyan { color: var(--cyan); }
-  .text-green { color: var(--green); }
-  .text-red { color: var(--red); }
-  .text-amber { color: var(--amber); }
-
-  /* ── RESPONSIVE ── */
-  @media (max-width: 900px) {
-    nav { padding: 0 1.5rem; }
-    .nav-links { display: none; }
-    #hero { padding: 0 1.5rem; }
-    section { padding: 5rem 1.5rem 3rem; }
-    .hero-orb { opacity: 0.3; width: 320px; height: 320px; }
-    .problems-grid, .solutions-grid, .steps-grid { grid-template-columns: 1fr; }
-    .memory-grid, .status-grid, .audit-row { grid-template-columns: 1fr; }
-    .problem-card.full { grid-column: 1; }
-    #close { padding: 4rem 1.5rem; flex-direction: column; gap: 3rem; }
-    .close-orb { position: relative; right: auto; top: auto; transform: none; width: 240px; height: 240px; }
-    .stats-row { gap: 2rem; }
-  }
-</style>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Allura&amp;family=Barlow:ital,wght@0,400;0,600;0,700;0,800;1,400&amp;family=Barlow+Condensed:wght@500;600;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="system/colors_and_type.css">
+<script type='text/javascript' nonce='fscwS/Dyw5QYiig10Uk6wQ==' src='https://claude.ai/tqhB_zGojKz3wbtz74N3vnitndoCTUGRz8ZwIbi9e3AecMrlk-xxfR5tkSD93BMvPlqGLKGOfRkcjA7_P7rPzCxinPEK-pmE_ArHNenWB9aYVl5ZNlw_ni2C4hynfX18ZOVnkM-G2gh5t_uinNqUsgqjmOF6DA-6W2uA6rro5ab8uOi_tbfl0FEzcL4Kw-7ieyjH3x-epIBFjgBNdLiDBiWPbtvbE9gSxFcMN_o741UtZijvFr_5d7XT_wXm_cwebCa4chMER9rwasYVAIVeukDsPzJZ7RKav5awRZvHAyhbVaXUhPojclmU-bjXlNkR-cCZ3MMEqFVDbOnxy_QS16rnf-UwplMJUXcIllf0xb_SZ0BaBgWplHPTC7ox2DEGED-8-vnteglIijielt_hcR1XXwQAWcK5BxaQxGxC8SUhUx6Kj1HGhUdaemzz0vlZFBLZCpUHgWU7n90LbB62gGp4Dg8Z7qWBH5tRKKhlqXjxM8-6UIOz2bM01YDz7yv0syJfMG04MeZAwwsPVeZ_Rryl9vVBRFJzNRoGRWQDQg_vIlaORhvW2Ss2dYY'></script><script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 </head>
 <body>
+<div id="root"></div>
 
-<!-- NAV -->
-<nav>
-  <a href="#hero" class="nav-logo"><span class="nav-logo-bright">Bright</span><span class="nav-logo-kibu">KIBU</span></a>
-  <ul class="nav-links">
-    <li><a href="#problem">The Problem</a></li>
-    <li><a href="#solutions">Solutions</a></li>
-    <li><a href="#stack">Platform</a></li>
-    <li><a href="#governance">Governance</a></li>
-    <li><a href="#memory">Memory</a></li>
-    <li><a href="#deployment">Deployment</a></li>
-    <li><a href="#close">Contact</a></li>
-  </ul>
-</nav>
+<script type="text/babel" data-presets="react">
 
-<!-- HERO -->
-<section id="hero">
-  <div class="hero-content">
-    <div class="hero-wordmark">KIBU</div>
-    <div class="hero-tagline">Agentic AI at the Edge</div>
-    <div class="hero-divider"></div>
-    <p class="hero-desc">A hardware-agnostic edge AI reasoning platform. Multi-modal perception, decision fusion, persistent memory, and agentic tool execution — tuned for high inference and reasoning throughput, ultra-low power, and zero cloud dependency.</p>
-    <div class="stats-row">
-      <div class="stat-item"><span class="stat-val">High</span><span class="stat-lbl">Throughput</span></div>
-      <div class="stat-item"><span class="stat-val">Ultra-low</span><span class="stat-lbl">Power</span></div>
-      <div class="stat-item"><span class="stat-val">Zero</span><span class="stat-lbl">Cloud dependency</span></div>
-    </div>
-  </div>
-  <div class="hero-orb">
-    <div class="orb-ring"></div>
-    <div class="orb-ring"></div>
-    <div class="orb-ring"></div>
-    <div class="orb-ring"></div>
-  </div>
-</section>
+// ==== components/atoms.jsx ====
+// ============================================================
+//  KIBU refactor — shared atoms
+//  Everything exports to window at the bottom (Babel scope rule).
+// ============================================================
 
-<!-- THE HARD PROBLEM -->
-<section id="problem">
-  <div class="section-label text-red">The Hard Problem</div>
-  <h2 class="section-title">Edge AI Decision Support Stresses the Whole Stack</h2>
-  <p class="section-sub">Running multi-modal inference, sensor fusion, memory, and autonomous decision support at the edge—without cloud, without giving up determinism—still exposes gaps in most architectures.</p>
+const { useState, useEffect, useRef } = React;
 
-  <div class="problems-grid">
-    <div class="problem-card full">
-      <h3>Multi-Modal Fusion Without Infrastructure</h3>
-      <p>Raw streams from vision, audio, and sensors must be reduced to structured intelligence on-device. Cloud systems offload this aggregation. At the edge it has to happen locally, in real time, deterministically.</p>
-    </div>
-    <div class="problem-card">
-      <h3>Context Starvation</h3>
-      <p>On-device language models run under severe token constraints. Tool schemas, memory, and conversation history consume the budget before the user message is included. The model never sees enough context to reason well.</p>
-    </div>
-    <div class="problem-card">
-      <h3>Tool Routing Without Infrastructure</h3>
-      <p>Cloud agents use large models and unlimited compute to select tools. At the edge you cannot load every schema on every turn. Naive approaches miss the right tool or time out.</p>
-    </div>
-    <div class="problem-card">
-      <h3>Memory Without Persistence Layer</h3>
-      <p>Cloud AI offloads memory to external databases. When disconnected or the link is unreliable, there is no external store. Memory must live on-device, survive disconnection, and remain queryable under constrained compute.</p>
-    </div>
-    <div class="problem-card">
-      <h3>Real-Time Control + AI Concurrently</h3>
-      <p>Inference alongside hardware control and sensor fusion introduces resource contention. Most edge AI systems avoid this by separating layers. A decision support platform cannot.</p>
-    </div>
-  </div>
-</section>
+// ---------- color tokens ----------
+const C = {
+  bg:      '#0A0F1E',
+  bg2:     '#0D1528',
+  bg3:     '#111E35',
+  bgDeep:  '#060A14',
+  border:  '#1A2E50',
+  cyan:    '#00C2FF',
+  green:   '#00E5A0',
+  amber:   '#FF8C42',
+  red:     '#FF4D6D',
+  neon:    '#DFF06A',
+  white:   '#FFFFFF',
+  slate:   '#8BAFD4',
+  dim:     '#4A6A8A',
+};
+const rgb = {
+  [C.cyan]:  '0,194,255',
+  [C.green]: '0,229,160',
+  [C.amber]: '255,140,66',
+  [C.red]:   '255,77,109',
+  [C.slate]: '139,175,212',
+  [C.dim]:   '74,106,138',
+};
 
-<!-- SOLUTIONS -->
-<section id="solutions">
-  <div class="section-label text-cyan">The Solutions</div>
-  <h2 class="section-title">Five Architectural Answers</h2>
+// ---------- font stacks ----------
+const F = {
+  body:    "'Barlow', sans-serif",
+  display: "'Barlow Condensed', sans-serif",
+  mono:    "'JetBrains Mono', monospace",
+  script:  "'Allura', cursive",
+};
 
-  <div class="solutions-grid">
-    <div class="sol-card">
-      <div class="sol-metric">Bounded</div>
-      <div class="sol-metric-lbl">context window</div>
-      <div class="sol-divider"></div>
-      <div class="sol-title">Conversation Summarization &amp; Token Budget</div>
-      <div class="sol-tag">Solves: Context Starvation</div>
-      <p class="sol-body">Token use is tracked each turn. As the budget tightens, older dialogue is summarized instead of dropped, so the model keeps coherent history within a fixed window—no silent truncation cliff.</p>
-    </div>
-    <div class="sol-card">
-      <div class="sol-metric">Tiered</div>
-      <div class="sol-metric-lbl">tool routing</div>
-      <div class="sol-divider"></div>
-      <div class="sol-title">Semantic Tool Discovery Pipeline</div>
-      <div class="sol-tag">Solves: Tool Routing Without Infrastructure</div>
-      <p class="sol-body">A staged pipeline: fast literal matches first, then embedding search over tool descriptions, with an optional model check only when confidence is unclear. Most turns exit early; heavy inference is the exception.</p>
-    </div>
-    <div class="sol-card">
-      <div class="sol-metric">Zero</div>
-      <div class="sol-metric-lbl">external deps</div>
-      <div class="sol-divider"></div>
-      <div class="sol-title">On-Device Vector Memory Store</div>
-      <div class="sol-tag">Solves: Memory Without Persistence Layer</div>
-      <p class="sol-body">Episodic, semantic, and procedural memory in an on-device vector index—no off-box database. Survives power cycles and loss of connectivity. Retrieval stays within the same compute envelope as inference.</p>
-    </div>
-    <div class="sol-card">
-      <div class="sol-metric">Deterministic</div>
-      <div class="sol-metric-lbl">execution</div>
-      <div class="sol-divider"></div>
-      <div class="sol-title">Typed Message Bus</div>
-      <div class="sol-tag">Solves: Real-Time Control + AI Concurrently</div>
-      <p class="sol-body">Components exchange typed messages over explicit channels and topics so payloads are known at compile time. Hardware control and inference run on separate paths without shared mutable state, cutting cross-talk and contention.</p>
-    </div>
-    <div class="sol-card">
-      <div class="sol-metric">Structured</div>
-      <div class="sol-metric-lbl">not raw streams</div>
-      <div class="sol-divider"></div>
-      <div class="sol-title">Decision-Level Fusion Node</div>
-      <div class="sol-tag">Solves: Multi-Modal Fusion Without Infrastructure</div>
-      <p class="sol-body">A deterministic fusion stage ingests model outputs and emits a single structured world-state update. High-rate sensor output collapses into one decision-grade snapshot; layers above the fusion stage consume typed data—not raw frames.</p>
-    </div>
-  </div>
-</section>
+// ---------- global styles + keyframes ----------
+function GlobalCss() {
+  return (
+    <style>{`
+      *{margin:0;padding:0;box-sizing:border-box}
+      html{scroll-behavior:smooth}
+      body{background:${C.bg};color:${C.white};font-family:${F.body};font-size:16px;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+      ::selection{background:${C.cyan};color:${C.bg}}
+      a{color:inherit;text-decoration:none}
+      button{font-family:inherit;background:none;border:none;color:inherit;cursor:pointer}
 
-<!-- PLATFORM STACK -->
-<section id="stack">
-  <div class="section-label text-amber">Platform Stack</div>
-  <h2 class="section-title">Hardware-Agnostic Edge AI Architecture</h2>
+      @keyframes bkPulse {
+        0%,100%{opacity:.55;transform:scale(1)}
+        50%{opacity:.85;transform:scale(1.04)}
+      }
+      @keyframes bkBlink {
+        0%,100%{opacity:1}
+        50%{opacity:.2}
+      }
+      @keyframes bkTick {
+        0%{transform:translateY(4px);opacity:0}
+        100%{transform:translateY(0);opacity:1}
+      }
+      @keyframes bkFade {
+        0%{opacity:0;transform:translateY(12px)}
+        100%{opacity:1;transform:translateY(0)}
+      }
+      @keyframes bkTrace {
+        0%   { stroke-dashoffset: 200; opacity:0 }
+        10%  { opacity:1 }
+        90%  { opacity:1 }
+        100% { stroke-dashoffset: 0;   opacity:0 }
+      }
+      @keyframes bkPacket {
+        0%   { offset-distance: 0%;   opacity:0 }
+        8%   { opacity:1 }
+        92%  { opacity:1 }
+        100% { offset-distance: 100%; opacity:0 }
+      }
+      @keyframes bkScan {
+        0%   { transform: translateY(-100%) }
+        100% { transform: translateY(100%) }
+      }
 
-  <div class="stack-layers">
-    <div class="stack-layer">
-      <div class="layer-bar" style="background:var(--cyan)"></div>
-      <div class="layer-content">
-        <div class="layer-name" style="color:var(--cyan)">Agentic Reasoning Layer</div>
-        <div class="layer-desc">Tool orchestration · Policy-governed execution · Memory · Behavior planning · Context compression</div>
+      .bk-reveal { opacity:0; animation: bkFade .7s ease forwards }
+      .bk-reveal-1 { animation-delay: .05s }
+      .bk-reveal-2 { animation-delay: .15s }
+      .bk-reveal-3 { animation-delay: .25s }
+      .bk-reveal-4 { animation-delay: .35s }
+      .bk-reveal-5 { animation-delay: .45s }
+
+      .bk-hoverlink { transition: color .2s ease }
+      .bk-hoverlink:hover { color: ${C.cyan} !important }
+
+      .bk-btn {
+        display:inline-flex;align-items:center;gap:.55rem;
+        padding:.85rem 1.8rem;
+        background:transparent;border:1px solid ${C.cyan};
+        color:${C.cyan};
+        font-family:${F.display};font-weight:700;font-size:.82rem;
+        letter-spacing:.18em;text-transform:uppercase;
+        cursor:pointer;transition:all .18s ease;
+      }
+      .bk-btn:hover { background:${C.cyan}; color:${C.bg} }
+      .bk-btn-sm { padding:.55rem 1.1rem;font-size:.72rem }
+
+      .bk-field {
+        padding:.85rem 1rem;background:${C.bg2};
+        border:1px solid ${C.border};color:${C.white};
+        font-family:${F.body};font-size:.95rem;outline:none;
+        transition:border-color .18s ease;
+      }
+      .bk-field:focus { border-color:${C.cyan} }
+
+      /* coordinate backdrop */
+      .bk-coord {
+        position:absolute;inset:0;pointer-events:none;
+        background-image:
+          linear-gradient(${C.border} 1px, transparent 1px),
+          linear-gradient(90deg, ${C.border} 1px, transparent 1px);
+        background-size: 80px 80px;
+        mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 40%, transparent 100%);
+        opacity: .35;
+      }
+      .bk-coord-fine {
+        position:absolute;inset:0;pointer-events:none;
+        background-image:
+          linear-gradient(${C.border} 1px, transparent 1px),
+          linear-gradient(90deg, ${C.border} 1px, transparent 1px);
+        background-size: 40px 40px;
+        opacity: .18;
+      }
+
+      /* section tick marks on left gutter */
+      .bk-ticks {
+        position:absolute;left:0;top:0;bottom:0;width:40px;
+        display:flex;flex-direction:column;justify-content:space-between;
+        pointer-events:none;opacity:.5;
+      }
+      .bk-ticks span {
+        display:block;width:12px;height:1px;background:${C.border};
+      }
+
+      /* scrolling scan line overlay for "live" moments */
+      .bk-scan {
+        position:absolute;inset:0;pointer-events:none;overflow:hidden;
+      }
+      .bk-scan::after {
+        content:'';position:absolute;left:0;right:0;height:40%;
+        background: linear-gradient(to bottom, transparent, rgba(0,194,255,.06), transparent);
+        animation: bkScan 8s linear infinite;
+      }
+
+      @keyframes bkPopIn {
+        from { opacity: 0; transform: translate(-50%, -50%) scale(0.75); }
+        to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      }
+
+      /* Orb + telemetry HUD: hide when viewport is too narrow (layout breaks) */
+      @media (max-width: 900px) {
+        .bk-hero-hud { display: none !important; }
+        .bk-hero-grid { grid-template-columns: 1fr !important; }
+        .bk-close-grid { grid-template-columns: 1fr !important; }
+      }
+    `}</style>
+  );
+}
+
+// ---------- shared section shell ----------
+function Section({ id, children, label, labelColor = C.cyan, title, sub, coord = 'fine', pad = '7rem 4rem 5rem', onEnter }) {
+  const ref = useRef(null);
+  const [vis, setVis] = useState(false);
+  useEffect(() => {
+    if (!ref.current) return;
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { setVis(true); onEnter && onEnter(id); }
+    }, { threshold: 0.2 });
+    io.observe(ref.current);
+    return () => io.disconnect();
+  }, [id]);
+  return (
+    <section ref={ref} id={id} style={{position:'relative',padding:pad,maxWidth:1280,margin:'0 auto',borderTop:`1px solid ${C.border}`}}>
+      {coord === 'fine'  && <div className="bk-coord-fine" />}
+      {coord === 'grid'  && <div className="bk-coord" />}
+      <div style={{position:'relative',zIndex:1,opacity:vis?1:0,transform:vis?'none':'translateY(12px)',transition:'opacity .7s ease, transform .7s ease'}}>
+        {(label || title) && (
+          <header style={{marginBottom:'2.4rem',display:'flex',flexDirection:'column',gap:'.65rem',maxWidth:880}}>
+            {label && <Label color={labelColor}>{label}</Label>}
+            {title && <h2 style={{fontFamily:F.display,fontWeight:800,fontSize:'clamp(2rem,4vw,3.2rem)',lineHeight:1.05,letterSpacing:'.01em',color:C.white,textWrap:'balance'}}>{title}</h2>}
+            {sub && <p style={{color:C.slate,fontStyle:'italic',fontSize:'1rem',maxWidth:820,textWrap:'pretty'}}>{sub}</p>}
+          </header>
+        )}
+        {children}
       </div>
-      <div class="layer-tag" style="color:var(--cyan);border-color:var(--cyan)">OPTIONAL</div>
-    </div>
-    <div class="stack-layer">
-      <div class="layer-bar" style="background:var(--red)"></div>
-      <div class="layer-content">
-        <div class="layer-name" style="color:var(--red)">Decision Fusion Layer</div>
-        <div class="layer-desc">Multi-modal fusion · Structured world state · Deterministic execution · Sensitivity boundary</div>
-      </div>
-      <div class="layer-tag" style="color:var(--red);border-color:var(--red)">FUSION</div>
-    </div>
-    <div class="boundary-marker">⟵ Fused state · raw sensing boundary</div>
-    <div class="stack-layer">
-      <div class="layer-bar" style="background:var(--green)"></div>
-      <div class="layer-content">
-        <div class="layer-name" style="color:var(--green)">Perception &amp; Inference</div>
-        <div class="layer-desc">Vision · Audio · Speech · Environmental sensing · Object &amp; scene detection · On-device sensor fusion</div>
-      </div>
-      <div class="layer-tag" style="color:var(--green);border-color:var(--green)">SOFTWARE</div>
-    </div>
-    <div class="stack-layer">
-      <div class="layer-bar" style="background:var(--amber)"></div>
-      <div class="layer-content">
-        <div class="layer-name" style="color:var(--amber)">Model Runtime</div>
-        <div class="layer-desc">On-device language and vision models · Task-specific workloads · Quantized inference</div>
-      </div>
-      <div class="layer-tag" style="color:var(--amber);border-color:var(--amber)">RUNTIME</div>
-    </div>
-    <div class="stack-layer">
-      <div class="layer-bar" style="background:var(--slate)"></div>
-      <div class="layer-content">
-        <div class="layer-name" style="color:var(--slate)">NPU / Accelerator</div>
-        <div class="layer-desc">NPU or GPU-class accelerators · Pluggable interface · Sized to the deployment envelope</div>
-      </div>
-      <div class="layer-tag" style="color:var(--slate);border-color:var(--slate)">HARDWARE</div>
-    </div>
-    <div class="stack-layer">
-      <div class="layer-bar" style="background:var(--dim)"></div>
-      <div class="layer-content">
-        <div class="layer-name" style="color:var(--dim)">Host Compute</div>
-        <div class="layer-desc">Embedded boards · Edge gateways · Commodity host hardware</div>
-      </div>
-      <div class="layer-tag" style="color:var(--dim);border-color:var(--dim)">HARDWARE</div>
-    </div>
-  </div>
-</section>
+    </section>
+  );
+}
 
-<!-- GOVERNANCE & CAPABILITY -->
-<section id="governance">
-  <div class="section-label text-cyan">Composition &amp; governance</div>
-  <h2 class="section-title">Software-Defined Capabilities &amp; Intent Policy</h2>
-  <p class="section-sub">Declarative profiles choose which hardware and agent features exist in a given deployment. Intent policy separates what the model proposes from what the platform may execute—so safety and operations stay explicit, reviewable, and updatable as configuration.</p>
+// ---------- label / eyebrow ----------
+function Label({ color = C.cyan, children, num }) {
+  return (
+    <div style={{display:'inline-flex',alignItems:'center',gap:'.7rem',color}}>
+      {num !== undefined && (
+        <span style={{fontFamily:F.mono,fontSize:'.65rem',letterSpacing:'.12em',color:C.dim}}>
+          {String(num).padStart(2,'0')}
+        </span>
+      )}
+      <span style={{width:18,height:1,background:color,opacity:.6}} />
+      <span style={{fontFamily:F.display,fontSize:'.72rem',fontWeight:700,letterSpacing:'.25em',textTransform:'uppercase'}}>{children}</span>
+    </div>
+  );
+}
 
-  <div class="audit-row">
-    <div class="audit-card">
-      <h3>Capability selection &amp; composition</h3>
-      <p>System definitions are data, not compile-time flags: inference, sensing, effectors, behaviors, and model assets are chosen through profiles. Subsystems and the message graph are composed for that profile only—if a capability is absent, it is not constructed and its pipelines are not wired, avoiding dead topics and wasted compute. Retarget the same runtime to different SKUs or environments by swapping configuration instead of rebuilding the stack.</p>
-    </div>
-    <div class="audit-card">
-      <h3>Intent policy governance</h3>
-      <p>After tool selection, ordered rules evaluate each proposed action against live platform state—interaction mode, rate limits, proximity, quiet windows, and similar signals. Policy can veto execution, answer with text alone, or steer toward an alternate tool when conditions match. Rules ship as versioned configuration, so governance evolves with the product without forking the agent.</p>
-    </div>
-  </div>
-</section>
+// ---------- mono tag ----------
+function Tag({ color = C.slate, children, solid = false }) {
+  return (
+    <span style={{
+      fontFamily:F.mono,fontSize:'.58rem',fontWeight:500,
+      letterSpacing:'.14em',textTransform:'uppercase',
+      padding:'.25rem .55rem',
+      border:`1px solid ${color}`,
+      color: solid ? C.bg : color,
+      background: solid ? color : 'transparent',
+      whiteSpace:'nowrap',
+    }}>{children}</span>
+  );
+}
 
-<!-- MEMORY & AUDITABILITY -->
-<section id="memory">
-  <div class="section-label text-green">Memory · Auditability · Security</div>
-  <h2 class="section-title">The Platform Remembers. And Can Account for Itself.</h2>
+// ---------- coordinate readout (decorative "instrument" chrome) ----------
+function Readout({ label, value, color = C.slate }) {
+  return (
+    <div style={{display:'flex',flexDirection:'column',gap:2}}>
+      <span style={{fontFamily:F.mono,fontSize:'.55rem',letterSpacing:'.15em',color:C.dim,textTransform:'uppercase'}}>{label}</span>
+      <span style={{fontFamily:F.mono,fontSize:'.7rem',letterSpacing:'.08em',color}}>{value}</span>
+    </div>
+  );
+}
 
-  <div class="memory-grid">
-    <div class="memory-card">
-      <h3>Episodic Memory</h3>
-      <p>Timestamped event log — every perception, decision, and action recorded with context. Survives power cycles.</p>
-      <div class="memory-use">Full mission replay after the link returns. Nothing is lost.</div>
+// ---------- orb ----------
+function Orb({ size = '100%', intensity = 1 }) {
+  const ring = {position:'absolute',borderRadius:'50%',border:`1px solid rgba(0,194,255,${0.15*intensity})`,background:`rgba(0,194,255,${0.06*intensity})`};
+  return (
+    <div style={{position:'relative',width:size,height:size}}>
+      <div style={{...ring, inset:0}} />
+      <div style={{...ring, inset:'12%', background:`rgba(0,194,255,${0.10*intensity})`, borderColor:`rgba(0,194,255,${0.22*intensity})`}} />
+      <div style={{...ring, inset:'26%', background:`rgba(0,194,255,${0.18*intensity})`, borderColor:`rgba(0,194,255,${0.35*intensity})`}} />
+      <div style={{...ring, inset:'40%', background:`rgba(0,194,255,${0.52*intensity})`, border:'none', animation:'bkPulse 3s ease-in-out infinite'}} />
     </div>
-    <div class="memory-card">
-      <h3>Semantic Memory</h3>
-      <p>Structured knowledge graph of environment, entities, and relationships. Continuously updated by the reasoning layer.</p>
-      <div class="memory-use">Baseline patterns enable anomaly detection without ground contact.</div>
-    </div>
-    <div class="memory-card">
-      <h3>Procedural Memory</h3>
-      <p>Learned behavioral routines encoded from successful past actions. Improves autonomous decision-making over time.</p>
-      <div class="memory-use">Mission efficiency improves across repeated deployments.</div>
-    </div>
-  </div>
-  <div class="audit-row">
-    <div class="audit-card">
-      <h3>Auditability</h3>
-      <p>Episodic memory functions as an AI flight recorder — every event, reasoning step, tool call, and decision is logged and retrievable. Full post-mission forensics without cloud dependency.</p>
-    </div>
-    <div class="audit-card">
-      <h3>Security</h3>
-      <p>Security has to hold at every layer—hardware trust, runtime integrity, data at rest, and operational response—not as a bolt-on at the end.</p>
-    </div>
-  </div>
-</section>
+  );
+}
 
-<!-- DEPLOYMENT FIT -->
-<section id="deployment">
-  <div class="section-label text-green">Deployment Fit</div>
-  <h2 class="section-title">Built for Serious Edge Deployments</h2>
-
-  <div class="deploy-grid">
-    <div class="req-list">
-      <div class="req-item">
-        <span class="req-item-title">✓ Long-running, low-touch operation</span>
-        <span class="req-item-fit">Behaviors and on-device memory persist across shifts and downtime—you are not in the loop on every single decision.</span>
-      </div>
-      <div class="req-item">
-        <span class="req-item-title">✓ Offline-first and flaky networks</span>
-        <span class="req-item-fit">No cloud dependency by design. The full reasoning stack keeps working when connectivity drops—or where there is no reliable uplink at all.</span>
-      </div>
-      <div class="req-item">
-        <span class="req-item-title">✓ Tight power and thermal budgets</span>
-        <span class="req-item-fit">Architected for accelerators and embedded hosts; scales to the compute envelope your hardware and budget allow.</span>
-      </div>
-      <div class="req-item">
-        <span class="req-item-title">✓ Many sensor types, one pipeline</span>
-        <span class="req-item-fit">Vision, audio, and environmental inputs fused on-device in real time across sites and asset types.</span>
-      </div>
-      <div class="req-item">
-        <span class="req-item-title">✓ Decision-ready outputs</span>
-        <span class="req-item-fit">Structured conclusions and signals your systems can use—not only raw streams that still need a data center to interpret.</span>
-      </div>
+// ---------- framed card (signature hairline + corner ticks) ----------
+function FrameCard({ accent = C.cyan, edge = 'top', children, style, pad = '1.5rem 1.4rem' }) {
+  return (
+    <div style={{
+      background:C.bg3,position:'relative',padding:pad,
+      borderTop: edge === 'top'  ? `3px solid ${accent}` : undefined,
+      borderLeft:edge === 'left' ? `3px solid ${accent}` : undefined,
+      ...style,
+    }}>
+      <Corners />
+      {children}
     </div>
-  </div>
-</section>
+  );
+}
+
+function Corners({ color = C.border }) {
+  const s = {position:'absolute',width:8,height:8,borderColor:color,borderStyle:'solid'};
+  return (
+    <>
+      <span style={{...s,top:0,left:0,borderWidth:'1px 0 0 1px'}}/>
+      <span style={{...s,top:0,right:0,borderWidth:'1px 1px 0 0'}}/>
+      <span style={{...s,bottom:0,left:0,borderWidth:'0 0 1px 1px'}}/>
+      <span style={{...s,bottom:0,right:0,borderWidth:'0 1px 1px 0'}}/>
+    </>
+  );
+}
+
+Object.assign(window, {
+  C, rgb, F, GlobalCss, Section, Label, Tag, Readout, Orb, FrameCard, Corners,
+});
 
 
-<!-- CLOSE -->
-<section id="close">
-  <div class="close-content">
-    <div class="close-wordmark">KIBU</div>
-    <div class="close-tagline">Agentic AI at the Edge</div>
-    <div class="close-divider"></div>
-    <p class="close-mission">Let's define the mission together.</p>
-    <div class="close-contact">
-      <a href="mailto:hello@brightkibu.com" class="close-url">Say hello · hello@brightkibu.com</a>
+// ==== components/nav-hero.jsx ====
+// ============================================================
+//  KIBU refactor — nav + hero
+// ============================================================
+
+function Nav({ active, onNav, progress }) {
+  const items = [
+    {k:'stack',    l:'Platform'},
+    {k:'turn',     l:'Turn'},
+    {k:'problem',  l:'Problem'},
+    {k:'solutions',l:'Solutions'},
+    {k:'memory',   l:'Memory'},
+    {k:'security', l:'Security'},
+    {k:'sectors',  l:'Sectors'},
+    {k:'close',    l:'Contact'},
+  ];
+  const scrolled = (progress || 0) > 0;
+  return (
+    <nav style={{
+      position:'fixed',top:0,left:0,right:0,zIndex:100,
+      background:'rgba(10,15,30,0.88)',
+      backdropFilter:'blur(14px)',
+      borderBottom:`1px solid ${C.border}`,
+    }}>
+      <div style={{
+        maxWidth:1280,margin:'0 auto',padding:'0 3rem',height:64,
+        display:'flex',alignItems:'center',justifyContent:'space-between',
+      }}>
+        <a onClick={()=>onNav('hero')} aria-label="Bright KIBU — home" style={{display:'inline-flex',alignItems:'center',gap:'.65rem',cursor:'pointer'}}>
+          <img src="assets/logo.png" alt="" width={120} height={36} decoding="async" style={{height:36,width:'auto',display:'block',flexShrink:0}} />
+          <div aria-hidden="true" style={{
+            display:'inline-flex',alignItems:'baseline',gap:'.55rem',
+            overflow:'hidden',whiteSpace:'nowrap',
+            maxWidth: scrolled ? 0 : 360,
+            opacity: scrolled ? 0 : 1,
+            transition:'max-width 0.38s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.28s ease',
+            marginLeft: scrolled ? '-0.35rem' : 0,
+          }}>
+            <span style={{fontFamily:F.script,fontWeight:400,fontSize:'1.85rem',lineHeight:1,color:C.neon,letterSpacing:'.02em',transform:'translateY(.06em)'}}>Bright</span>
+            <span style={{fontFamily:F.display,fontWeight:800,fontSize:'1.5rem',letterSpacing:'.18em',color:C.white}}>KIBU</span>
+          </div>
+        </a>
+        <ul style={{display:'flex',gap:'2.3rem',listStyle:'none',alignItems:'center'}}>
+          {items.map(({k,l}, i) => (
+            <li key={k}>
+              <a onClick={()=>onNav(k)}
+                 className="bk-hoverlink"
+                 style={{
+                   display:'inline-flex',alignItems:'center',gap:'.45rem',
+                   color: active===k ? C.cyan : C.slate,
+                   fontFamily:F.display,fontSize:'.78rem',fontWeight:600,
+                   letterSpacing:'.18em',textTransform:'uppercase',cursor:'pointer',
+                 }}>
+                <span style={{fontFamily:F.mono,fontSize:'.58rem',color:C.dim,letterSpacing:'.1em'}}>{String(i+1).padStart(2,'0')}</span>
+                {l}
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a onClick={()=>onNav('close')} className="bk-btn bk-btn-sm">Contact →</a>
+      </div>
+      {/* scroll progress line */}
+      <div style={{height:1,background:C.border,position:'relative'}}>
+        <div style={{position:'absolute',left:0,top:0,bottom:0,width:`${(progress||0)*100}%`,background:C.cyan,transition:'width .1s linear'}} />
+      </div>
+    </nav>
+  );
+}
+
+// Hero orb — sector use-case imagery (local + Unsplash, editorial-style)
+const HERO_USE_CASE_SLIDES = [
+  { code:'DEF · ISR', title:'Defense & ISR', color:'#FF4D6D',
+    img:'assets/defense-isr-drone.jpg' },
+  { code:'IND · AUTO', title:'Industrial', color:'#FF8C42',
+    img:'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&h=800&q=80' },
+  { code:'ROB · FIELD', title:'Robotics', color:'#00C2FF',
+    img:'assets/robotics-industrial.jpg' },
+  { code:'ENG · GRID', title:'Energy & infra', color:'#00E5A0',
+    img:'https://images.unsplash.com/photo-1466611653911-95081537e5b7?auto=format&fit=crop&w=800&h=800&q=80' },
+  { code:'MAR · DEEP', title:'Maritime', color:'#8BAFD4',
+    img:'https://images.unsplash.com/photo-1559827260-dc66d52bef19?auto=format&fit=crop&w=800&h=800&q=80' },
+  { code:'CLI · HAZ', title:'Climate & hazards', color:'#FF7043',
+    img:'assets/climate-hazards.jpg' },
+  { code:'MED · REG', title:'Medical', color:'#4A6A8A',
+    img:'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&h=800&q=80' },
+];
+
+// Random anchor + jitter — ring around the orb, biased away from corner readouts
+function randomOrbSlot() {
+  const anchors = [
+    { t: 10, l: 50 }, { t: 20, l: 80 }, { t: 48, l: 92 }, { t: 78, l: 80 },
+    { t: 90, l: 50 }, { t: 78, l: 20 }, { t: 48, l: 8 }, { t: 20, l: 20 },
+    { t: 34, l: 64 }, { t: 64, l: 36 }, { t: 30, l: 36 }, { t: 66, l: 64 },
+    { t: 14, l: 34 }, { t: 14, l: 66 }, { t: 86, l: 34 }, { t: 86, l: 66 },
+    { t: 52, l: 72 }, { t: 52, l: 28 },
+  ];
+  const a = anchors[Math.floor(Math.random() * anchors.length)];
+  return {
+    top: `${Math.max(7, Math.min(93, a.t + (Math.random() - 0.5) * 12))}%`,
+    left: `${Math.max(10, Math.min(90, a.l + (Math.random() - 0.5) * 12))}%`,
+  };
+}
+
+// ---------- Hero ----------
+function Hero({ onCta, variant = 'orb' }) {
+  const [time, setTime] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const hhmmss = time.toISOString().slice(11,19);
+
+  // metric chips
+  const metrics = [
+    ['High', 'Throughput',  C.cyan],
+    ['Ultra-low','Power',    C.green],
+    ['Zero','Cloud dependency', C.amber],
+    ['Deterministic','Execution', C.slate],
+  ];
+
+  return (
+    <section id="hero" style={{
+      minHeight:'100vh',position:'relative',overflow:'hidden',
+      display:'flex',alignItems:'stretch',
+      borderBottom:`1px solid ${C.border}`,
+    }}>
+      {/* coordinate field */}
+      <div className="bk-coord" style={{opacity:.5}} />
+
+      {/* top instrument bar */}
+      <div style={{
+        position:'absolute',top:64,left:0,right:0,
+        padding:'1rem 3rem',
+        display:'flex',justifyContent:'space-between',alignItems:'center',
+        fontFamily:F.mono,fontSize:'.62rem',letterSpacing:'.18em',color:C.dim,textTransform:'uppercase',
+        borderBottom:`1px solid ${C.border}`,
+        background:`rgba(13,21,40,.6)`,
+        backdropFilter:'blur(6px)',
+      }}>
+        <span>NODE · KIBU-ECC · LAT 47.6062 · LON 122.3321 W</span>
+        <span style={{display:'inline-flex',gap:'2rem'}}>
+          <span>UPLINK <span style={{color:C.red}}>OFFLINE</span></span>
+          <span>INFERENCE <span style={{color:C.green, animation:'bkBlink 2s infinite'}}>● LIVE</span></span>
+          <span>TIME · {hhmmss}Z</span>
+        </span>
+      </div>
+
+      <div className="bk-hero-grid" style={{
+        maxWidth:1280,margin:'0 auto',padding:'9rem 4rem 5rem',
+        display:'grid',gridTemplateColumns:'1.2fr 1fr',gap:'3rem',
+        alignItems:'center',width:'100%',position:'relative',zIndex:2,
+      }}>
+        {/* left — wordmark + copy */}
+        <div>
+          <div className="bk-reveal bk-reveal-1" style={{
+            fontFamily:F.display,fontWeight:800,
+            fontSize:'clamp(5rem, 13vw, 9.5rem)',
+            letterSpacing:'.18em',color:C.white,lineHeight:.95,marginBottom:'.3rem',
+            textShadow:'0 0 40px rgba(0,194,255,.08)',
+          }}>KIBU</div>
+
+          <div className="bk-reveal bk-reveal-2" style={{display:'flex',alignItems:'center',gap:'.8rem',marginBottom:'2rem'}}>
+            <span style={{fontFamily:F.body,fontStyle:'italic',fontSize:'1.35rem',color:C.cyan}}>Agentic AI at the Edge</span>
+            <span style={{flex:1,maxWidth:280,height:1,background:`linear-gradient(to right, ${C.cyan}, transparent)`}}/>
+          </div>
+
+          <p className="bk-reveal bk-reveal-3" style={{color:C.slate,fontSize:'1.02rem',marginBottom:'2.5rem',maxWidth:560,lineHeight:1.7}}>
+            A hardware-agnostic edge AI reasoning platform. Multi-modal perception,
+            decision fusion, persistent memory, and agentic tool execution — tuned
+            for high inference throughput, ultra-low power, and zero cloud dependency.
+          </p>
+
+          <div className="bk-reveal bk-reveal-4" style={{display:'flex',gap:'1rem',flexWrap:'wrap',marginBottom:'3.5rem'}}>
+            <a onClick={onCta} className="bk-btn">Define the mission →</a>
+            <a onClick={()=>document.getElementById('stack')?.scrollIntoView({behavior:'smooth',block:'start'})}
+               className="bk-btn" style={{borderColor:C.border,color:C.slate}}
+               onMouseEnter={e=>{e.currentTarget.style.borderColor=C.slate;e.currentTarget.style.color=C.white;}}
+               onMouseLeave={e=>{e.currentTarget.style.borderColor=C.border;e.currentTarget.style.color=C.slate;}}>
+              Read the platform ↓
+            </a>
+          </div>
+
+          {/* metrics row */}
+          <div className="bk-reveal bk-reveal-5" style={{
+            display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:1,
+            background:C.border,border:`1px solid ${C.border}`,maxWidth:680,
+          }}>
+            {metrics.map(([v,l,col])=>(
+              <div key={l} style={{background:C.bg3,padding:'1rem 1rem',borderTop:`2px solid ${col}`}}>
+                <div style={{fontFamily:F.display,fontWeight:800,fontSize:'1.5rem',color:col,lineHeight:1}}>{v}</div>
+                <div style={{fontSize:'.68rem',color:C.slate,letterSpacing:'.08em',textTransform:'uppercase',marginTop:6}}>{l}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* right — orb w/ telemetry (bk-hero-hud hidden below 900px) */}
+        <div className="bk-hero-hud" style={{position:'relative',aspectRatio:'1/1',maxWidth:520,justifySelf:'end',width:'100%'}}>
+          <HeroInstrument showUseCases />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// orb + readouts; optional use-case thumbnails that pop at random positions around the orb
+function HeroInstrument({ showUseCases = false }) {
+  const [useCasePops, setUseCasePops] = useState([]);
+  useEffect(() => {
+    if (!showUseCases) {
+      setUseCasePops([]);
+      return undefined;
+    }
+    const timeouts = [];
+    let cancelled = false;
+    const spawn = () => {
+      if (cancelled) return;
+      const slideIdx = Math.floor(Math.random() * HERO_USE_CASE_SLIDES.length);
+      const pos = randomOrbSlot();
+      const id = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+      setUseCasePops(p => [...p, { id, slideIdx, ...pos }].slice(-5));
+      const tid = window.setTimeout(() => {
+        if (!cancelled) setUseCasePops(p => p.filter(x => x.id !== id));
+      }, 3000);
+      timeouts.push(tid);
+    };
+    spawn();
+    const interval = window.setInterval(spawn, 2100 + Math.random() * 1400);
+    return () => {
+      cancelled = true;
+      window.clearInterval(interval);
+      timeouts.forEach(tid => window.clearTimeout(tid));
+    };
+  }, [showUseCases]);
+
+  return (
+    <div style={{position:'absolute',inset:0}}>
+      {/* bracket corners */}
+      <CornerTicks />
+
+      {/* orb */}
+      <div style={{position:'absolute',inset:'12%',zIndex:2}}>
+        <Orb size="100%" />
+      </div>
+
+      {/* use-case pops — random positions on the HUD (above rings, below readouts) */}
+      {showUseCases && (
+        <div style={{position:'absolute',inset:0,zIndex:4,pointerEvents:'none'}}>
+          {useCasePops.map(({ id, slideIdx, top, left }) => {
+            const s = HERO_USE_CASE_SLIDES[slideIdx];
+            return (
+              <div
+                key={id}
+                style={{
+                  position:'absolute',
+                  top,
+                  left,
+                  transform:'translate(-50%, -50%)',
+                  width:108,
+                  borderRadius:4,
+                  overflow:'hidden',
+                  boxShadow:`0 4px 20px rgba(0,0,0,0.55), 0 0 0 1px ${s.color}66`,
+                  animation:'bkPopIn 0.42s ease-out forwards',
+                }}
+              >
+                <div style={{height:52,overflow:'hidden'}}>
+                  <img
+                    src={s.img}
+                    alt={s.title}
+                    width={216}
+                    height={104}
+                    style={{width:'100%',height:'100%',objectFit:'cover'}}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div style={{
+                  padding:'4px 6px 5px',
+                  background:`linear-gradient(180deg, ${C.bg3} 0%, ${C.bgDeep} 100%)`,
+                  borderTop:`2px solid ${s.color}`,
+                }}>
+                  <div style={{fontFamily:F.mono,fontSize:'.45rem',letterSpacing:'.12em',color:C.dim,textTransform:'uppercase',lineHeight:1.2}}>{s.code}</div>
+                  <div style={{fontFamily:F.display,fontWeight:700,fontSize:'.62rem',color:C.white,marginTop:1,lineHeight:1.15}}>{s.title}</div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* readouts overlay */}
+      <div style={{position:'absolute',top:'2%',left:'4%',display:'flex',flexDirection:'column',gap:10,zIndex:10}}>
+        <Readout label="NODE" value="KIBU-ECC-01" color={C.cyan}/>
+        <Readout label="MODE" value="AUTONOMOUS" color={C.green}/>
+        <Readout label="MEM"  value="0.94 / 1.00" color={C.slate}/>
+      </div>
+      <div style={{position:'absolute',bottom:'2%',right:'4%',display:'flex',flexDirection:'column',gap:10,alignItems:'flex-end',zIndex:10}}>
+        <Readout label="TURN"    value="#001,247" color={C.cyan}/>
+        <Readout label="LATENCY" value="38 ms"    color={C.green}/>
+        <Readout label="POWER"   value="2.1 W"    color={C.amber}/>
+      </div>
+
+      {/* inner cross-hairs */}
+      <svg style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none'}}>
+        <line x1="50%" y1="8%"  x2="50%" y2="18%" stroke={C.border}/>
+        <line x1="50%" y1="82%" x2="50%" y2="92%" stroke={C.border}/>
+        <line x1="8%"  y1="50%" x2="18%" y2="50%" stroke={C.border}/>
+        <line x1="82%" y1="50%" x2="92%" y2="50%" stroke={C.border}/>
+      </svg>
     </div>
-  </div>
-  <div class="close-orb">
-    <div class="orb-ring"></div>
-    <div class="orb-ring"></div>
-    <div class="orb-ring"></div>
-    <div class="orb-ring"></div>
-  </div>
-</section>
+  );
+}
 
-<footer>KIBU Platform &nbsp;·&nbsp; brightkibu.com &nbsp;·&nbsp; 2026</footer>
+function CornerTicks({ color = C.cyan }) {
+  const len = 18;
+  const base = {position:'absolute',width:len,height:len,borderColor:color,borderStyle:'solid'};
+  return (
+    <>
+      <span style={{...base,top:0,left:0,borderWidth:'1px 0 0 1px'}}/>
+      <span style={{...base,top:0,right:0,borderWidth:'1px 1px 0 0'}}/>
+      <span style={{...base,bottom:0,left:0,borderWidth:'0 0 1px 1px'}}/>
+      <span style={{...base,bottom:0,right:0,borderWidth:'0 1px 1px 0'}}/>
+    </>
+  );
+}
 
+Object.assign(window, { Nav, Hero });
+
+
+// ==== components/stack-turn.jsx ====
+// ============================================================
+//  KIBU refactor — platform stack (topology) + turn walkthrough
+// ============================================================
+
+// ------------------------------------------------------------
+// StackTopology — the platform as a hierarchical architecture
+// diagram with connecting wires, role tags, boundary marker.
+// ------------------------------------------------------------
+function StackTopology() {
+  // rows top→bottom
+  const layers = [
+    {color:C.cyan,  name:'Agentic Reasoning',  desc:'Tool orchestration · policy-governed execution · memory · planning', tag:'OPTIONAL',  pill:'L6'},
+    {color:C.red,   name:'Decision Fusion',    desc:'Multi-modal fusion · structured world state · deterministic execution', tag:'FUSION',  pill:'L5'},
+    {boundary:true, label:'⟵ fused state · raw-sensing boundary'},
+    {color:C.green, name:'Perception & Inference', desc:'Vision · audio · speech · environmental sensing · object detection', tag:'SOFTWARE', pill:'L4'},
+    {color:C.amber, name:'Model Runtime',      desc:'On-device language and vision models · quantized inference', tag:'RUNTIME', pill:'L3'},
+    {color:C.slate, name:'NPU / Accelerator',  desc:'NPU or GPU-class accelerators · pluggable interface', tag:'HARDWARE', pill:'L2'},
+    {color:C.dim,   name:'Host Compute',       desc:'Embedded boards · edge gateways · commodity hardware', tag:'HARDWARE', pill:'L1'},
+  ];
+
+  return (
+    <div style={{
+      position:'relative',
+      background:C.bg2,border:`1px solid ${C.border}`,
+      display:'grid',gridTemplateColumns:'minmax(160px, 220px) 1fr minmax(180px, 240px)',
+    }}>
+      {/* left gutter: pills + vertical spine (header row must match center/right for row sync) */}
+      <div style={{borderRight:`1px solid ${C.border}`,background:C.bg,padding:'1.2rem 1.1rem 1.2rem 1.4rem',display:'flex',flexDirection:'column',gap:0}}>
+        <div style={{fontFamily:F.mono,fontSize:'.58rem',color:C.dim,letterSpacing:'.18em',textTransform:'uppercase',marginBottom:'1rem',lineHeight:1.2}}>LAYER INDEX</div>
+        {layers.map((l,i)=> l.boundary ? (
+          <div key={i} style={{height:28,position:'relative'}}>
+            <div style={{position:'absolute',left:'50%',top:0,bottom:0,width:1,background:C.red,opacity:.6,borderLeft:`1px dashed ${C.red}`}}/>
+          </div>
+        ) : (
+          <div key={i} style={{height:88,display:'flex',alignItems:'center',gap:10,position:'relative'}}>
+            <span style={{fontFamily:F.display,fontWeight:800,fontSize:'1.6rem',color:l.color,letterSpacing:'.08em',width:38}}>{l.pill}</span>
+            <span style={{fontFamily:F.mono,fontSize:'.55rem',color:C.dim,letterSpacing:'.15em',textTransform:'uppercase'}}>NODE<br/>{String(i+1).padStart(2,'0')}</span>
+            {/* spine connector down */}
+            {i < layers.length - 1 && <span style={{position:'absolute',right:-1,top:'50%',bottom:-40,width:1,background:C.border}}/>}
+          </div>
+        ))}
+      </div>
+
+      {/* center rows — same top offset as side gutters (padding + phantom header) so rows line up */}
+      <div style={{display:'flex',flexDirection:'column',padding:'1.2rem 0 1.2rem 0',minHeight:0}}>
+        <div aria-hidden="true" style={{
+          fontFamily:F.mono,fontSize:'.58rem',letterSpacing:'.18em',textTransform:'uppercase',
+          marginBottom:'1rem',lineHeight:1.2,color:'transparent',userSelect:'none',pointerEvents:'none',
+        }}>LAYER INDEX</div>
+        {layers.map((l,i)=> l.boundary ? (
+          <div key={i} style={{
+            height:28,position:'relative',
+            background:`rgba(${rgb[C.red]},.06)`,
+            borderTop:`1px dashed ${C.red}`,borderBottom:`1px dashed ${C.red}`,
+            display:'flex',alignItems:'center',justifyContent:'flex-end',
+            padding:'0 1.2rem',
+            fontFamily:F.mono,fontSize:'.6rem',letterSpacing:'.18em',color:C.red,textTransform:'uppercase',
+          }}>{l.label}</div>
+        ) : (
+          <div key={i} style={{
+            height:88,display:'grid',gridTemplateColumns:'4px 1fr',alignItems:'stretch',
+            background:C.bg3,
+            borderTop: i === 0 ? 'none' : `1px solid ${C.border}`,
+            position:'relative',
+          }}>
+            <div style={{background:l.color}}/>
+            <div style={{padding:'.9rem 1.4rem',display:'flex',flexDirection:'column',justifyContent:'center'}}>
+              <div style={{display:'flex',alignItems:'baseline',gap:'.9rem'}}>
+                <div style={{fontFamily:F.display,fontWeight:700,fontSize:'1.15rem',color:l.color,letterSpacing:'.01em'}}>{l.name}</div>
+                <span style={{fontFamily:F.mono,fontSize:'.55rem',color:C.dim,letterSpacing:'.15em',textTransform:'uppercase'}}>layer {layers.length - i - (layers.slice(0,i).filter(x=>x.boundary).length)}</span>
+              </div>
+              <div style={{fontSize:'.82rem',color:C.slate,marginTop:4}}>{l.desc}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* right gutter: tags + IO pins */}
+      <div style={{borderLeft:`1px solid ${C.border}`,background:C.bg,padding:'1.2rem 1.2rem 1.2rem 1.4rem',display:'flex',flexDirection:'column',gap:0}}>
+        <div style={{fontFamily:F.mono,fontSize:'.58rem',color:C.dim,letterSpacing:'.18em',textTransform:'uppercase',marginBottom:'1rem',textAlign:'right',lineHeight:1.2}}>ROLE / INTERFACE</div>
+        {layers.map((l,i)=> l.boundary ? (
+          <div key={i} style={{height:28}}/>
+        ) : (
+          <div key={i} style={{height:88,display:'flex',alignItems:'center',justifyContent:'flex-end',gap:10,position:'relative'}}>
+            {/* pin into row */}
+            <span style={{position:'absolute',left:-8,top:'50%',width:8,height:1,background:l.color,opacity:.6}}/>
+            <Tag color={l.color}>{l.tag}</Tag>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ------------------------------------------------------------
+// TurnWalkthrough — "Anatomy of a turn" section
+// static 5-stage pipeline with subtle pulsing indicator that
+// animates along the pipeline (CSS only).
+// ------------------------------------------------------------
+function TurnWalkthrough() {
+  const stages = [
+    {n:'01', tag:'CAPTURE',   col:C.green, title:'Sensor capture',       body:'Vision, audio, and environmental streams enter the fusion node at native rate.'},
+    {n:'02', tag:'FUSION',    col:C.red,   title:'Decision fusion',      body:'High-rate streams collapse into one structured, decision-grade snapshot.'},
+    {n:'03', tag:'ROUTING',   col:C.amber, title:'Tiered tool routing', body:'Literal match → embedding search → optional model check. Most turns exit early.'},
+    {n:'04', tag:'REASONING', col:C.cyan,  title:'Agentic reasoning',    body:'Model executes the selected tool with bounded context and persistent memory.'},
+    {n:'05', tag:'WRITE',     col:C.slate, title:'Memory + action',      body:'Outcome is logged to episodic memory. Downstream systems receive structured output.'},
+  ];
+  const [active, setActive] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setActive(a => (a + 1) % stages.length), 1800);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <div style={{border:`1px solid ${C.border}`,background:C.bg2,position:'relative'}}>
+      {/* top readout */}
+      <div style={{
+        padding:'.8rem 1.4rem',borderBottom:`1px solid ${C.border}`,background:C.bg,
+        display:'flex',justifyContent:'space-between',alignItems:'center',
+        fontFamily:F.mono,fontSize:'.6rem',letterSpacing:'.2em',color:C.dim,textTransform:'uppercase',
+      }}>
+        <span>TURN · #001,247 · IN FLIGHT</span>
+        <span style={{display:'flex',gap:'2rem'}}>
+          <span>TOKENS <span style={{color:C.slate}}>312 / 4096</span></span>
+          <span>ENERGY <span style={{color:C.amber}}>2.1 W</span></span>
+          <span>LATENCY <span style={{color:C.green}}>38 ms</span></span>
+        </span>
+      </div>
+
+      {/* pipeline */}
+      <div style={{display:'grid',gridTemplateColumns:`repeat(${stages.length}, 1fr)`,gap:0,position:'relative'}}>
+        {/* rail — spans full width; vertical ticks sit on column centers */}
+        <div style={{position:'absolute',top:62,left:0,right:0,height:1,background:C.border,zIndex:0}}/>
+        {/* pulse dot: centered on each column + vertically on rail (62px line) */}
+        <div style={{
+          position:'absolute',
+          top:57,
+          left:`${(100 * (active + 0.5) / stages.length)}%`,
+          width:10,
+          height:10,
+          borderRadius:'50%',
+          background:stages[active].col,
+          transform:'translate(-50%, 0)',
+          boxShadow:`0 0 0 4px rgba(${rgb[stages[active].col]},.2)`,
+          transition:'left .6s ease, background .3s',
+          zIndex:2,
+        }}/>
+        {stages.map((s,i)=> (
+          <div key={s.n} style={{
+            padding:'1.3rem 1.2rem 1.6rem',
+            borderLeft: i === 0 ? 'none' : `1px solid ${C.border}`,
+            background: active === i ? C.bg3 : C.bg2,
+            transition:'background .3s ease',
+            position:'relative',
+          }}>
+            <div style={{display:'flex',alignItems:'baseline',justifyContent:'space-between',marginBottom:'.3rem'}}>
+              <span style={{fontFamily:F.display,fontWeight:800,fontSize:'1.6rem',color:s.col,lineHeight:1}}>{s.n}</span>
+              <Tag color={s.col}>{s.tag}</Tag>
+            </div>
+            {/* tick above the rail */}
+            <div style={{height:20,display:'flex',alignItems:'flex-end',justifyContent:'center',position:'relative',zIndex:1}}>
+              <span style={{width:1,height:14,background: active === i ? s.col : C.border, transition:'background .3s'}}/>
+            </div>
+            <div style={{height:1,background:C.border,margin:'0 -1.2rem .9rem'}}/>
+            <div style={{fontFamily:F.display,fontWeight:700,fontSize:'1.05rem',color: active === i ? C.white : C.slate,marginBottom:'.45rem'}}>{s.title}</div>
+            <p style={{fontSize:'.8rem',color:C.slate,lineHeight:1.55}}>{s.body}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* bottom readout */}
+      <div style={{
+        padding:'.75rem 1.4rem',borderTop:`1px solid ${C.border}`,background:C.bg,
+        display:'flex',justifyContent:'space-between',alignItems:'center',
+        fontFamily:F.mono,fontSize:'.58rem',letterSpacing:'.18em',color:C.dim,textTransform:'uppercase',
+      }}>
+        <span>STAGE {stages[active].n} · {stages[active].tag}</span>
+        <span>↳ EXITED EARLY ON 84% OF TURNS</span>
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window, { StackTopology, TurnWalkthrough });
+
+
+// ==== components/problem-solutions-memory.jsx ====
+// ============================================================
+//  KIBU refactor — Problem / Solutions / Memory
+// ============================================================
+
+// Problem: paired layout — oversized numeral + item,
+// full-width hard-problem callout at top
+function ProblemSection() {
+  const big = {color:C.red, n:'00', title:'Multi-Modal Fusion Without Infrastructure', body:'Raw streams from vision, audio, and sensors must be reduced to structured intelligence on-device. At the edge it has to happen locally, in real time, deterministically.'};
+  const items = [
+    {color:C.amber, n:'01', title:'Context Starvation', body:'On-device language models run under severe token constraints. Tool schemas, memory, and history consume the budget before the user message is included.'},
+    {color:C.red,   n:'02', title:'Tool Routing Without Infrastructure', body:'You cannot load every schema on every turn. Naive approaches miss the right tool or time out.'},
+    {color:C.amber, n:'03', title:'Memory Without Persistence Layer', body:'Memory must live on-device, survive disconnection, and remain queryable under constrained compute.'},
+    {color:C.red,   n:'04', title:'Real-Time Control + AI Concurrently', body:'Inference alongside hardware control introduces resource contention. A decision support platform cannot avoid it.'},
+  ];
+  return (
+    <Section id="problem" label="The Hard Problem" labelColor={C.red}
+      title="Edge AI Decision Support Stresses the Whole Stack"
+      sub="Running multi-modal inference, sensor fusion, memory, and autonomous decision support at the edge — without cloud, without giving up determinism — still exposes gaps in most architectures.">
+
+      {/* signature full-width callout */}
+      <div style={{
+        background:C.bg3,border:`1px solid ${C.border}`,
+        borderLeft:`3px solid ${big.color}`,
+        padding:'2rem 2.2rem',marginBottom:1,
+        display:'grid',gridTemplateColumns:'auto 1fr auto',gap:'2.2rem',alignItems:'center',
+      }}>
+        <span style={{fontFamily:F.display,fontWeight:800,fontSize:'5rem',color:big.color,lineHeight:1,letterSpacing:'.02em'}}>{big.n}</span>
+        <div>
+          <h3 style={{fontFamily:F.display,fontWeight:800,fontSize:'1.7rem',color:C.white,letterSpacing:'.01em',marginBottom:'.6rem',textWrap:'balance'}}>{big.title}</h3>
+          <p style={{color:C.slate,fontSize:'.95rem',lineHeight:1.6,maxWidth:780}}>{big.body}</p>
+        </div>
+        <Tag color={big.color} solid>ROOT</Tag>
+      </div>
+
+      {/* 2x2 grid */}
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:1,background:C.border,border:`1px solid ${C.border}`,borderTop:'none'}}>
+        {items.map((it,i)=> (
+          <div key={i} style={{background:C.bg3,padding:'1.6rem 1.5rem',borderLeft:`3px solid ${it.color}`,display:'grid',gridTemplateColumns:'auto 1fr',gap:'1.2rem'}}>
+            <span style={{fontFamily:F.display,fontWeight:800,fontSize:'2.4rem',color:it.color,lineHeight:1}}>{it.n}</span>
+            <div>
+              <h3 style={{fontFamily:F.display,fontWeight:700,fontSize:'1.1rem',color:C.white,marginBottom:'.5rem',letterSpacing:'.01em'}}>{it.title}</h3>
+              <p style={{fontSize:'.85rem',color:C.slate,lineHeight:1.6}}>{it.body}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
+// Solutions: same 5-up grid but enriched with a solves→leader-line reference
+function SolutionsSection() {
+  const sols = [
+    {color:C.cyan,  metric:'Bounded',     lbl:'context window', title:'Conversation Summarization & Token Budget', tag:'P-01', body:'Older dialogue is summarized instead of dropped — no silent truncation cliff.'},
+    {color:C.green, metric:'Tiered',      lbl:'tool routing',   title:'Semantic Tool Discovery Pipeline',           tag:'P-02', body:'Literal match → embedding search → optional model check. Most turns exit early.'},
+    {color:C.amber, metric:'Zero',        lbl:'external deps',  title:'On-Device Vector Memory Store',              tag:'P-03', body:'Episodic, semantic, procedural memory — survives power cycles, no off-box DB.'},
+    {color:C.slate, metric:'Deterministic',lbl:'execution',     title:'Typed Message Bus',                          tag:'P-04', body:'Typed channels. Hardware control and inference on separate paths.'},
+    {color:C.red,   metric:'Structured',  lbl:'not raw streams',title:'Decision-Level Fusion Node',                  tag:'P-00', body:'High-rate sensor output collapses into one decision-grade snapshot.'},
+  ];
+  return (
+    <Section id="solutions" label="The Solutions" labelColor={C.cyan}
+      title="Five Architectural Answers"
+      sub="Each architectural answer traces to a specific hard problem named above. The mapping is intentional and total.">
+      <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:1,background:C.border,border:`1px solid ${C.border}`}}>
+        {sols.map((s,i)=>(
+          <div key={i} style={{background:C.bg3,padding:'1.6rem 1.1rem 1.4rem',display:'flex',flexDirection:'column',borderTop:`3px solid ${s.color}`,position:'relative'}}>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'1.2rem'}}>
+              <Tag color={C.dim}>S-{String(i+1).padStart(2,'0')}</Tag>
+              <Tag color={s.color}>solves {s.tag}</Tag>
+            </div>
+            <div style={{fontFamily:F.display,fontWeight:800,fontSize:'1.55rem',color:s.color,textAlign:'left',marginBottom:'.1rem',letterSpacing:'.01em',textWrap:'balance'}}>{s.metric}</div>
+            <div style={{fontSize:'.62rem',color:C.dim,letterSpacing:'.15em',marginBottom:'1.1rem',textTransform:'uppercase'}}>{s.lbl}</div>
+            <div style={{height:1,background:C.border,marginBottom:'1rem'}}/>
+            <div style={{fontFamily:F.display,fontWeight:700,fontSize:'.98rem',color:C.white,marginBottom:'.55rem',lineHeight:1.3,letterSpacing:'.01em'}}>{s.title}</div>
+            <p style={{fontSize:'.78rem',color:C.slate,lineHeight:1.6,flex:1}}>{s.body}</p>
+          </div>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
+function MemorySection() {
+  const mem = [
+    {color:C.cyan,  title:'Episodic Memory',   body:'Timestamped event log — every perception, decision, and action recorded with context.', use:'Full mission replay after the link returns.', idx:'M-01'},
+    {color:C.green, title:'Semantic Memory',   body:'Structured knowledge graph of environment, entities, and relationships.',                 use:'Baseline patterns enable anomaly detection without ground contact.', idx:'M-02'},
+    {color:C.amber, title:'Procedural Memory', body:'Learned behavioral routines encoded from successful past actions.',                        use:'Mission efficiency improves across repeated deployments.', idx:'M-03'},
+  ];
+  return (
+    <Section id="memory" label="Memory · Auditability · Security" labelColor={C.green}
+      title="The Platform Remembers. And Can Account for Itself."
+      sub="Three memory systems, one persistence layer, on device. Survives power cycles. Queryable under constrained compute.">
+      <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:1,background:C.border,border:`1px solid ${C.border}`}}>
+        {mem.map((m,i)=>{
+          const rgbv = rgb[m.color];
+          return (
+            <div key={i} style={{background:C.bg3,padding:'1.7rem 1.5rem',borderTop:`3px solid ${m.color}`,display:'flex',flexDirection:'column'}}>
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'1.1rem'}}>
+                <Tag color={C.dim}>{m.idx}</Tag>
+                <Tag color={m.color}>RESIDENT</Tag>
+              </div>
+              <h3 style={{fontFamily:F.display,fontWeight:800,fontSize:'1.4rem',color:m.color,marginBottom:'.7rem',letterSpacing:'.01em'}}>{m.title}</h3>
+              <p style={{fontSize:'.88rem',color:C.slate,lineHeight:1.65,marginBottom:'1rem',flex:1}}>{m.body}</p>
+              <div style={{fontSize:'.8rem',color:m.color,fontStyle:'italic',padding:'.7rem .9rem',border:`1px solid rgba(${rgbv},.25)`,background:`rgba(${rgbv},.06)`,lineHeight:1.5}}>
+                <span style={{fontFamily:F.mono,fontStyle:'normal',fontSize:'.55rem',letterSpacing:'.18em',color:C.dim,textTransform:'uppercase',display:'block',marginBottom:4}}>Field use</span>
+                {m.use}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </Section>
+  );
+}
+
+// Security Abstraction Layer (SAL) — primitives + profile-driven provider
+function SecuritySection() {
+  const primitives = [
+    { n:'01', col:C.cyan,  name:'Key management',    body:'Cryptographic keys as opaque handles — application code never sees raw material.' },
+    { n:'02', col:C.green, name:'Attestation',       body:'Hardware-backed or declared identity signals for trust and provisioning workflows.' },
+    { n:'03', col:C.amber, name:'Secure channels',   body:'Authenticated, confidential transport between components and peers.' },
+    { n:'04', col:C.slate, name:'Encrypted storage', body:'Data at rest with keys bound to the active security provider.' },
+    { n:'05', col:C.red,   name:'Policy enforcement',body:'Central rules for what each service may do — loaded with the backend, enforced at runtime.' },
+  ];
+  return (
+    <Section id="security" label="Security" labelColor={C.cyan}
+      title="Security Through Modular Means"
+      sub="A Security Abstraction Layer (SAL) exposes one contract to the stack while the deployment profile selects the backend — same as inference and sensing.">
+      <div style={{
+        background:C.bg3,border:`1px solid ${C.border}`,borderLeft:`3px solid ${C.cyan}`,
+        padding:'1.6rem 2rem',marginBottom:'1px',
+      }}>
+        <p style={{color:C.slate,fontSize:'.92rem',lineHeight:1.65,maxWidth:900}}>
+          <strong style={{color:C.white}}>Deployment-aware.</strong> The security layer is something you opt into for a given product or mission profile — not something that pretends to be there when it is not. Integration stays explicit across the trust boundary, and what you get at runtime is reported clearly at startup so operators can see whether protections are rooted in software, hardware, or a stated mix, along with any caveats that apply.
+        </p>
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:1,background:C.border,border:`1px solid ${C.border}`,marginBottom:'1px'}}>
+        {primitives.map((p)=> (
+          <div key={p.n} style={{background:C.bg2,padding:'1.25rem 1rem',borderTop:`3px solid ${p.col}`}}>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:'.5rem'}}>
+              <span style={{fontFamily:F.display,fontWeight:800,fontSize:'1.35rem',color:p.col}}>{p.n}</span>
+              <Tag color={p.col}>PRIMITIVE</Tag>
+            </div>
+            <div style={{fontFamily:F.display,fontWeight:700,fontSize:'.95rem',color:C.white,marginBottom:'.45rem',letterSpacing:'.01em'}}>{p.name}</div>
+            <p style={{fontSize:'.76rem',color:C.slate,lineHeight:1.55}}>{p.body}</p>
+          </div>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
+Object.assign(window, { ProblemSection, SolutionsSection, MemorySection, SecuritySection });
+
+
+// ==== components/sectors-deployment-close.jsx ====
+// ============================================================
+//  KIBU refactor — Sectors (who this is for) + Deployment + Close
+// ============================================================
+
+// ------------------------------------------------------------
+// SectorsSection — "Who this is for", as a sector directory.
+// Numbered entries, left-aligned like a reference index, with
+// hover reveals and sector-specific micro-specs on the right.
+// Explicitly anti-NEPI: no education/classroom, no friendly tone.
+// ------------------------------------------------------------
+function SectorsSection() {
+  const sectors = [
+    {
+      idx:'SEC-01', code:'DEF', color:C.red,
+      title:'Defense · ISR',
+      mission:'Persistent intelligence, surveillance, and reconnaissance on autonomous platforms where the link cannot be assumed.',
+      signals:[['Uplink','Intermittent'],['Autonomy','Supervised → Autonomous'],['Audit','Required']],
+      example:'Maritime surface vehicles running 360° threat detection through contested RF.',
+    },
+    {
+      idx:'SEC-02', code:'IND', color:C.amber,
+      title:'Industrial Automation',
+      mission:'Decision-grade output from sensor fusion on equipment that cannot phone home every cycle.',
+      signals:[['Uplink','Optional'],['Autonomy','Closed-loop'],['Audit','Required']],
+      example:'In-line inspection with memory of prior lot conditions, on-node model execution.',
+    },
+    {
+      idx:'SEC-03', code:'ROB', color:C.cyan,
+      title:'Robotics · Autonomy',
+      mission:'Planning, tool use, and procedural memory on mobile platforms under tight power envelopes.',
+      signals:[['Uplink','None'],['Autonomy','Full'],['Audit','Local log']],
+      example:'Field robotics pipelines where each turn must exit within deterministic latency.',
+    },
+    {
+      idx:'SEC-04', code:'ENG', color:C.green,
+      title:'Energy · Infrastructure',
+      mission:'Anomaly detection across long-lived deployments, no off-box dependency for state or reasoning.',
+      signals:[['Uplink','Flaky'],['Autonomy','Supervisory'],['Audit','Compliance']],
+      example:'Grid-edge asset monitoring with baseline pattern memory resident on-device.',
+    },
+    {
+      idx:'SEC-05', code:'MAR', color:C.slate,
+      title:'Maritime · Subsea',
+      mission:'Sensor fusion at depth where the bandwidth ceiling is measured in bits, not bytes.',
+      signals:[['Uplink','Acoustic'],['Autonomy','Mission'],['Audit','Post-mission']],
+      example:'ROV inspection runs where structured conclusions, not raw video, must survive the uplink.',
+    },
+    {
+      idx:'SEC-06', code:'CLI', color:'#FF7043',
+      title:'Climate · Hazards',
+      mission:'Continuous monitoring where events are sparse, seasons drift, and the uplink is the first thing to fail.',
+      signals:[['Uplink','Intermittent'],['Autonomy','Event-triggered'],['Audit','Telemetry chain']],
+      example:'Wildland interface sensors, snowpack / avalanche terrain cues, and fire-perimeter reasoning at the edge.',
+    },
+    {
+      idx:'SEC-07', code:'MED', color:C.dim,
+      title:'Medical · Regulated',
+      mission:'Deterministic execution with full decision auditability, air-gapped by policy.',
+      signals:[['Uplink','Air-gapped'],['Autonomy','Decision support'],['Audit','Regulator-ready']],
+      example:'Point-of-care inference logged for retrospective clinical review.',
+    },
+  ];
+
+  return (
+    <Section id="sectors" label="Who This Is For" labelColor={C.slate}
+      title="Seven Sectors. One Operational Profile."
+      sub="The common thread: programs where the network is hostile, the compute is bounded, and the decision has to be right the first time.">
+
+      <div style={{border:`1px solid ${C.border}`,background:C.bg2}}>
+        {/* header row */}
+        <div style={{
+          display:'grid',gridTemplateColumns:'120px 1.2fr 2fr 1.2fr 140px',
+          padding:'.7rem 1.4rem',
+          borderBottom:`1px solid ${C.border}`,background:C.bg,
+          fontFamily:F.mono,fontSize:'.58rem',letterSpacing:'.2em',color:C.dim,textTransform:'uppercase',
+        }}>
+          <span>Sector</span><span>Domain</span><span>Operational Mission</span><span>Signals</span><span style={{textAlign:'right'}}>Reference</span>
+        </div>
+        {sectors.map((s,i)=>(
+          <SectorRow key={s.idx} s={s} last={i===sectors.length-1}/>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
+function SectorRow({ s, last }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div
+      onMouseEnter={()=>setOpen(true)} onMouseLeave={()=>setOpen(false)}
+      style={{
+        display:'grid',gridTemplateColumns:'120px 1.2fr 2fr 1.2fr 140px',
+        padding:'1.3rem 1.4rem',alignItems:'start',
+        borderBottom: last ? 'none' : `1px solid ${C.border}`,
+        background: open ? C.bg3 : 'transparent',
+        borderLeft:`3px solid ${open ? s.color : 'transparent'}`,
+        transition:'background .2s ease, border-color .2s ease',
+        cursor:'default',
+      }}>
+      {/* idx */}
+      <div>
+        <div style={{fontFamily:F.mono,fontSize:'.58rem',color:C.dim,letterSpacing:'.18em'}}>{s.idx}</div>
+        <div style={{fontFamily:F.display,fontWeight:800,fontSize:'1.8rem',color:s.color,lineHeight:1,marginTop:4,letterSpacing:'.08em'}}>{s.code}</div>
+      </div>
+
+      {/* domain */}
+      <div>
+        <div style={{fontFamily:F.display,fontWeight:700,fontSize:'1.1rem',color:C.white,letterSpacing:'.01em'}}>{s.title}</div>
+      </div>
+
+      {/* mission */}
+      <div style={{color:C.slate,fontSize:'.86rem',lineHeight:1.6,paddingRight:'1rem'}}>
+        {s.mission}
+        {open && (
+          <div style={{marginTop:'.6rem',fontSize:'.75rem',color:s.color,fontStyle:'italic',borderLeft:`1px solid ${s.color}`,paddingLeft:10,opacity:.9}}>
+            {s.example}
+          </div>
+        )}
+      </div>
+
+      {/* signals */}
+      <div style={{display:'flex',flexDirection:'column',gap:4,fontFamily:F.mono,fontSize:'.6rem',color:C.dim,letterSpacing:'.1em',textTransform:'uppercase'}}>
+        {s.signals.map(([k,v])=>(
+          <div key={k} style={{display:'flex',justifyContent:'space-between',gap:'1rem',maxWidth:220}}>
+            <span>{k}</span><span style={{color:C.slate}}>{v}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* ref */}
+      <div style={{textAlign:'right',display:'flex',flexDirection:'column',gap:6,alignItems:'flex-end'}}>
+        <Tag color={s.color}>ACTIVE</Tag>
+        <span style={{fontFamily:F.mono,fontSize:'.55rem',color:C.dim,letterSpacing:'.15em'}}>§ {s.idx}</span>
+      </div>
+    </div>
+  );
+}
+
+// ------------------------------------------------------------
+// DeploymentSection — operational profile (checklist + spec)
+// Full-bleed-ish band, two columns: requirements list + metric grid
+// ------------------------------------------------------------
+function DeploymentSection() {
+  const reqs = [
+    ['Long-running, low-touch operation','Behaviors and on-device memory persist across shifts and downtime.'],
+    ['Offline-first and flaky networks','No cloud dependency by design. Full reasoning stack keeps working.'],
+    ['Tight power and thermal budgets','Scales to the compute envelope your hardware allows.'],
+    ['Many sensor types, one pipeline','Vision, audio, environmental inputs fused on-device in real time.'],
+    ['Decision-ready outputs','Structured conclusions your systems can use — not only raw streams.'],
+    ['Auditable by construction','Every turn logged to episodic memory. Replayable post-mission.'],
+  ];
+  const specs = [
+    ['Host','x86_64 · ARM64 · embedded'],
+    ['Accelerators','NPU · GPU · pluggable'],
+    ['Power envelope','From 2 W'],
+    ['Dependencies','None off-device'],
+    ['Air-gap','Supported'],
+    ['Memory','Episodic · Semantic · Procedural'],
+  ];
+  return (
+    <Section id="deployment" label="Deployment Fit" labelColor={C.green}
+      title="Built for Serious Edge Deployments"
+      sub="Match the profile, and the platform gets out of the way.">
+
+      <div style={{display:'grid',gridTemplateColumns:'1.4fr 1fr',gap:1,background:C.border,border:`1px solid ${C.border}`}}>
+        {/* requirements */}
+        <div style={{background:C.bg3,padding:'1.8rem 1.8rem'}}>
+          <div style={{fontFamily:F.mono,fontSize:'.58rem',color:C.dim,letterSpacing:'.2em',textTransform:'uppercase',marginBottom:'1.3rem'}}>— Operational Profile</div>
+          <div style={{display:'flex',flexDirection:'column',gap:12}}>
+            {reqs.map(([t,d],i)=>(
+              <div key={i} style={{display:'grid',gridTemplateColumns:'26px 1fr',gap:'1rem',alignItems:'start',paddingBottom:12,borderBottom:i<reqs.length-1?`1px solid ${C.border}`:'none'}}>
+                <span style={{fontFamily:F.display,fontWeight:800,color:C.green,fontSize:'1.2rem',lineHeight:1}}>✓</span>
+                <div>
+                  <div style={{fontFamily:F.display,fontWeight:700,fontSize:'1rem',color:C.white,letterSpacing:'.01em'}}>{t}</div>
+                  <div style={{fontSize:'.82rem',color:C.slate,lineHeight:1.55,marginTop:3}}>{d}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* spec card */}
+        <div style={{background:C.bg3,padding:'1.8rem 1.8rem',position:'relative'}}>
+          <div style={{fontFamily:F.mono,fontSize:'.58rem',color:C.dim,letterSpacing:'.2em',textTransform:'uppercase',marginBottom:'1.3rem'}}>— Runtime Spec</div>
+          <div style={{display:'flex',flexDirection:'column',gap:0}}>
+            {specs.map(([k,v],i)=>(
+              <div key={k} style={{display:'grid',gridTemplateColumns:'1fr auto',gap:'1rem',padding:'.7rem 0',borderBottom:i<specs.length-1?`1px dashed ${C.border}`:'none'}}>
+                <span style={{fontFamily:F.mono,fontSize:'.65rem',color:C.dim,letterSpacing:'.12em',textTransform:'uppercase'}}>{k}</span>
+                <span style={{fontFamily:F.display,fontWeight:700,fontSize:'.92rem',color:C.white,letterSpacing:'.03em'}}>{v}</span>
+              </div>
+            ))}
+          </div>
+          {/* mini telemetry */}
+          <div style={{marginTop:'1.5rem',padding:'.8rem',background:C.bg2,border:`1px solid ${C.border}`,display:'flex',justifyContent:'space-between',gap:12,alignItems:'center'}}>
+            <span style={{fontFamily:F.mono,fontSize:'.55rem',color:C.dim,letterSpacing:'.18em',textTransform:'uppercase'}}>Profile match</span>
+            <div style={{flex:1,height:4,background:C.border,position:'relative'}}>
+              <div style={{position:'absolute',left:0,top:0,bottom:0,width:'92%',background:C.green}}/>
+            </div>
+            <span style={{fontFamily:F.display,fontWeight:800,color:C.green,fontSize:'1rem'}}>92%</span>
+          </div>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
+// ------------------------------------------------------------
+// Close — contact with instrument chrome
+// ------------------------------------------------------------
+function Close({ sent, onSend }) {
+  const [email, setEmail] = useState('');
+  return (
+    <section id="close" style={{
+      position:'relative',overflow:'hidden',
+      borderTop:`1px solid ${C.border}`,
+      background:C.bg2,
+    }}>
+      <div className="bk-coord-fine" style={{opacity:.3}}/>
+      <div className="bk-close-grid" style={{
+        maxWidth:1280,margin:'0 auto',
+        padding:'6rem 4rem 2rem',
+        display:'grid',gridTemplateColumns:'1.1fr 1fr',gap:'3rem',alignItems:'center',
+        position:'relative',zIndex:1,
+      }}>
+        <div>
+          <Label color={C.cyan} num={9}>Contact</Label>
+          <div style={{
+            fontFamily:F.display,fontWeight:800,fontSize:'clamp(4rem,10vw,7rem)',
+            letterSpacing:'.18em',color:C.white,lineHeight:1,margin:'1.3rem 0 .4rem',
+          }}>KIBU</div>
+          <div style={{display:'flex',alignItems:'center',gap:'.8rem',marginBottom:'1.4rem'}}>
+            <span style={{fontStyle:'italic',color:C.cyan,fontSize:'1.2rem'}}>Agentic AI at the Edge</span>
+            <span style={{flex:1,maxWidth:260,height:1,background:`linear-gradient(to right, ${C.cyan}, transparent)`}}/>
+          </div>
+          <p style={{color:C.slate,fontSize:'1rem',marginBottom:'1.8rem',maxWidth:520,lineHeight:1.65}}>
+            Let's define the mission together. Tell us the operational profile —
+            platform, sensors, uplink, power envelope — and we'll tell you what
+            fits, what doesn't, and where we'd start.
+          </p>
+
+          {sent ? (
+            <div style={{
+              display:'inline-flex',alignItems:'center',gap:'.8rem',
+              padding:'.9rem 1.3rem',border:`1px solid ${C.green}`,
+              color:C.green,fontFamily:F.display,fontWeight:700,letterSpacing:'.18em',
+              textTransform:'uppercase',fontSize:'.8rem',background:`rgba(${rgb[C.green]},.06)`,
+            }}>✓ Received · we'll be in touch</div>
+          ) : (
+            <form onSubmit={e=>{e.preventDefault();if(email)onSend(email);}} style={{display:'flex',gap:0,maxWidth:520}}>
+              <input
+                value={email} onChange={e=>setEmail(e.target.value)}
+                className="bk-field"
+                placeholder="you@yourdomain.com" type="email"
+                style={{flex:1,borderRight:'none'}}
+              />
+              <button type="submit" className="bk-btn" style={{borderLeft:'none'}}>Say hello →</button>
+            </form>
+          )}
+
+          <div style={{marginTop:'2rem',display:'flex',gap:'2.5rem',flexWrap:'wrap'}}>
+            <Readout label="LOCATION" value="PORTLAND · OR" color={C.slate}/>
+            <Readout label="PROGRAMS" value="BY REQUEST" color={C.slate}/>
+            <Readout label="REPLY SLA" value="1 BUSINESS DAY" color={C.slate}/>
+          </div>
+        </div>
+
+        <div className="bk-hero-hud" style={{position:'relative',aspectRatio:'1/1',maxWidth:440,justifySelf:'end',width:'100%'}}>
+          <HeroInstrument showUseCases={false} />
+        </div>
+      </div>
+
+      <div style={{
+        borderTop:`1px solid ${C.border}`,
+        padding:'1.2rem 3rem',
+        maxWidth:1280,margin:'0 auto',
+        display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:'1rem',
+        fontFamily:F.mono,fontSize:'.6rem',letterSpacing:'.2em',color:C.dim,textTransform:'uppercase',
+      }}>
+        <span>
+          <span style={{fontFamily:F.script,fontSize:'1.25rem',color:C.neon,letterSpacing:'.02em',textTransform:'none'}}>Bright</span>
+          <span style={{marginLeft:8,color:C.white,letterSpacing:'.18em',fontFamily:F.display,fontWeight:800}}>KIBU</span>
+        </span>
+        <span>PORTLAND · OR · 2026 · brightkibu.com</span>
+      </div>
+    </section>
+  );
+}
+
+Object.assign(window, { SectorsSection, DeploymentSection, Close });
+
+
+
+
+// ==== App ====
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "ambient_grid": "fine",
+  "hero_metrics": true,
+  "turn_autoplay": true,
+  "accent_primary": "cyan",
+  "section_order": "architecture_first"
+}/*EDITMODE-END*/;
+
+function App() {
+  const [active, setActive] = useState('hero');
+  const [sent, setSent] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [tweaks, setTweaks] = useState(TWEAK_DEFAULTS);
+  const [tweaksOpen, setTweaksOpen] = useState(false);
+  const [tweaksAvailable, setTweaksAvailable] = useState(false);
+
+  // scroll progress
+  useEffect(() => {
+    const onScroll = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(max > 0 ? Math.min(1, window.scrollY / max) : 0);
+      // active section
+      const sections = ['hero','stack','turn','problem','solutions','memory','security','sectors','deployment','close'];
+      for (const id of sections) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        const r = el.getBoundingClientRect();
+        if (r.top <= 140 && r.bottom > 140) { setActive(id); break; }
+      }
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, {passive:true});
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // edit-mode protocol
+  useEffect(() => {
+    const onMsg = (e) => {
+      const d = e.data || {};
+      if (d.type === '__activate_edit_mode') setTweaksOpen(true);
+      if (d.type === '__deactivate_edit_mode') setTweaksOpen(false);
+    };
+    window.addEventListener('message', onMsg);
+    setTweaksAvailable(true);
+    window.parent.postMessage({type:'__edit_mode_available'}, '*');
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
+
+  const setTweak = (k, v) => {
+    setTweaks(t => ({...t, [k]: v}));
+    try { window.parent.postMessage({type:'__edit_mode_set_keys', edits:{[k]: v}}, '*'); } catch {}
+  };
+
+  const nav = (id) => {
+    const el = document.getElementById(id);
+    if (el) window.scrollTo({top: el.offsetTop - 60, behavior:'smooth'});
+  };
+
+  // section order variants
+  const architecture_first = (
+    <>
+      <StackSectionShell tweaks={tweaks}/>
+      <TurnSectionShell tweaks={tweaks}/>
+      <ProblemSection/>
+      <SolutionsSection/>
+      <MemorySection/>
+      <SecuritySection/>
+      <SectorsSection/>
+      <DeploymentSection/>
+    </>
+  );
+  const problem_first = (
+    <>
+      <ProblemSection/>
+      <SolutionsSection/>
+      <StackSectionShell tweaks={tweaks}/>
+      <TurnSectionShell tweaks={tweaks}/>
+      <MemorySection/>
+      <SecuritySection/>
+      <SectorsSection/>
+      <DeploymentSection/>
+    </>
+  );
+
+  return (
+    <>
+      <GlobalCss/>
+      <Nav active={active} onNav={nav} progress={progress}/>
+      <Hero onCta={()=>nav('close')}/>
+      {tweaks.section_order === 'problem_first' ? problem_first : architecture_first}
+      <Close sent={sent} onSend={()=>setSent(true)}/>
+      {tweaksOpen && <TweaksPanel tweaks={tweaks} setTweak={setTweak} onClose={()=>setTweaksOpen(false)}/>}
+    </>
+  );
+}
+
+function StackSectionShell({ tweaks }) {
+  return (
+    <Section id="stack" label="Platform Stack" labelColor={C.amber}
+      title="Hardware-Agnostic Edge AI Architecture"
+      sub="Seven layers. One boundary. Pluggable at the silicon, deterministic at the fusion line, agentic above it.">
+      <StackTopology/>
+    </Section>
+  );
+}
+function TurnSectionShell({ tweaks }) {
+  return (
+    <Section id="turn" label="Anatomy of a Turn" labelColor={C.cyan}
+      title="How a Single Turn Runs"
+      sub="Five stages from sensor capture to memory write. Most turns exit early at stage 03 — heavy inference is the exception, not the rule.">
+      <TurnWalkthrough/>
+    </Section>
+  );
+}
+
+// ---------- Tweaks panel ----------
+function TweaksPanel({ tweaks, setTweak, onClose }) {
+  const options = {
+    ambient_grid: ['off','fine','grid'],
+    accent_primary: ['cyan','green','amber'],
+    section_order: ['architecture_first','problem_first'],
+  };
+  return (
+    <div style={{
+      position:'fixed',right:24,bottom:24,zIndex:200,width:300,
+      background:C.bg2,border:`1px solid ${C.cyan}`,
+      fontFamily:F.body,color:C.white,
+    }}>
+      <div style={{padding:'.8rem 1rem',borderBottom:`1px solid ${C.border}`,display:'flex',justifyContent:'space-between',alignItems:'center',background:C.bg}}>
+        <span style={{fontFamily:F.display,fontWeight:700,letterSpacing:'.2em',fontSize:'.75rem',color:C.cyan}}>TWEAKS</span>
+        <button onClick={onClose} style={{color:C.slate,fontSize:'1rem'}}>×</button>
+      </div>
+      <div style={{padding:'1rem',display:'flex',flexDirection:'column',gap:'1.1rem'}}>
+        <Toggle label="Hero metric grid" checked={!!tweaks.hero_metrics} onChange={v=>setTweak('hero_metrics',v)}/>
+        <Toggle label="Turn autoplay"    checked={!!tweaks.turn_autoplay} onChange={v=>setTweak('turn_autoplay',v)}/>
+        <Picker label="Ambient grid"     value={tweaks.ambient_grid} options={options.ambient_grid} onChange={v=>setTweak('ambient_grid',v)}/>
+        <Picker label="Primary accent"   value={tweaks.accent_primary} options={options.accent_primary} onChange={v=>setTweak('accent_primary',v)}/>
+        <Picker label="Section order"    value={tweaks.section_order} options={options.section_order} onChange={v=>setTweak('section_order',v)}/>
+      </div>
+    </div>
+  );
+}
+function Toggle({label,checked,onChange}) {
+  return (
+    <label style={{display:'flex',justifyContent:'space-between',alignItems:'center',cursor:'pointer',fontSize:'.82rem',color:C.slate}}>
+      <span>{label}</span>
+      <span onClick={()=>onChange(!checked)} style={{width:36,height:18,background:checked?C.cyan:C.border,position:'relative',transition:'background .2s'}}>
+        <span style={{position:'absolute',top:2,left:checked?20:2,width:14,height:14,background:C.white,transition:'left .2s'}}/>
+      </span>
+    </label>
+  );
+}
+function Picker({label,value,options,onChange}) {
+  return (
+    <div>
+      <div style={{fontSize:'.7rem',color:C.dim,letterSpacing:'.14em',textTransform:'uppercase',marginBottom:6,fontFamily:F.mono}}>{label}</div>
+      <div style={{display:'flex',gap:0,border:`1px solid ${C.border}`}}>
+        {options.map(o=>(
+          <button key={o} onClick={()=>onChange(o)} style={{
+            flex:1,padding:'.45rem .3rem',fontSize:'.7rem',letterSpacing:'.08em',textTransform:'uppercase',
+            fontFamily:F.display,fontWeight:700,
+            background:value===o?C.cyan:'transparent',color:value===o?C.bg:C.slate,
+            borderRight:`1px solid ${C.border}`,
+          }}>{o.replace(/_/g,' ')}</button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Wait for all babel-transpiled scripts to register their globals before rendering.
+window.App = App;
+function tryRender() {
+  if (window.Nav && window.Hero && window.StackTopology && window.ProblemSection && window.SecuritySection && window.SectorsSection && window.Close) {
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  } else {
+    setTimeout(tryRender, 30);
+  }
+}
+tryRender();
+</script>
 </body>
 </html>
